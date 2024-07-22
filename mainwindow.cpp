@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
     timer->start();
     resetCurrentExercise();
     m_pause = false;
+    m_current_song = nullptr;
 
     ui->pushButton_music->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
     ui->pushButton_music_next->setIcon(style()->standardIcon(QStyle::SP_MediaSkipForward));
@@ -31,11 +32,25 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->pushButton_stop->setDisabled(true);
 
-    m_notify = new QMediaPlayer(this);
     m_musicPause = true;
 
+    ui->verticalSlider_volume->setMaximum(100);
+    ui->verticalSlider_volume->setMinimum(1);
+    ui->verticalSlider_volume->setValue(50);
+
+    m_notify = new QMediaPlayer(this);
     m_notify->setMedia(QUrl("qrc:/sounds/sounds/nofity_5s.mp3"));
     m_notify->setVolume(100);
+}
+
+void MainWindow::closeEvent (QCloseEvent *event){
+    if(QMessageBox::question(this, "Do you want to exits", "App will be close") == QMessageBox::No){
+       event->ignore();
+       return;
+    }
+
+
+    event->accept();
 }
 
 void MainWindow::process(){
@@ -164,6 +179,21 @@ int MainWindow::startExercise(exercise_t* _exercise){
             item->setBackground(QBrush(Qt::yellow));
         }
     }
+    return 0;
+}
+
+int MainWindow::playSong(int index){
+    if(m_mp3_list.isEmpty() || index >= m_mp3_list.size()){
+        qDebug() << "Cannot play song";
+        return -1;
+    }
+    if(m_current_song == nullptr){
+        m_current_song = new QMediaPlayer(this);
+    }
+    qDebug() << "now play song " << m_musicDir + '/' + m_mp3_list.at(index);
+    ui->label_song_name->setText(m_mp3_list.at(index));
+    m_current_song->setMedia(QUrl(m_musicDir + '/' + m_mp3_list.at(index)));
+    m_current_song->play();
     return 0;
 }
 
@@ -445,25 +475,80 @@ void MainWindow::on_pushButton_stop_clicked()
 
 void MainWindow::on_pushButton_music_clicked()
 {
+    if(m_mp3_list.empty()){
+        ui->statusbar->showMessage("No songs in list", 3000);
+        return;
+    }
+    qDebug() << QString::number(m_mp3_list.size()) << "song in list";
+
     m_musicPause = !m_musicPause;
     if(m_musicPause){
         ui->pushButton_music->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
         qDebug() << "now stop background music";
+        m_current_song->pause();
     }else{
         ui->pushButton_music->setIcon(style()->standardIcon(QStyle::SP_MediaPause));
         qDebug() << "now play background music";
+        if(m_current_song == nullptr){
+            m_song_index = 0;
+            playSong(m_song_index);
+        }else{
+            m_current_song->play();
+        }
     }
 }
 
 
 void MainWindow::on_pushButton_music_next_clicked()
 {
-
+    m_song_index++;
+    if(m_song_index >= m_mp3_list.size())
+        m_song_index = 0;
+    playSong(m_song_index);
 }
 
 
 void MainWindow::on_pushButton_music_back_clicked()
 {
+    m_song_index--;
+    if(m_song_index <= 0)
+        m_song_index = m_mp3_list.size() - 1;
+    playSong(m_song_index);
+}
 
+
+void MainWindow::on_pushButton_open_music_clicked()
+{
+    QString musicDir = QFileDialog::getExistingDirectory(this, tr("Choose music folder"), QDir::homePath() + "/Desktop", QFileDialog::ReadOnly);
+    if (musicDir.isEmpty()) {
+        return;
+    }
+    qDebug() << "Music folder" << musicDir;
+    QDir directory(musicDir);
+    QStringList songList = directory.entryList(QStringList() << "*.mp3" << "*.MP3",QDir::Files);
+
+    if(songList.isEmpty()){
+        qDebug() << "Folder not contain any song";
+        return;
+    }
+
+    m_musicDir = musicDir;
+    foreach(QString filename, songList) {
+        m_mp3_list.push_back(filename);
+        qDebug() << "add to song list " << filename;
+    }
+
+    for(int i = 0; i < m_mp3_list.size(); i++){
+        qDebug() << m_mp3_list.at(i);
+    }
+}
+
+
+void MainWindow::on_verticalSlider_volume_valueChanged(int value)
+{
+    if(m_current_song){
+        m_current_song->setVolume(value);
+        qDebug() << "set volume to " << QString::number(value);
+    }
 }
 

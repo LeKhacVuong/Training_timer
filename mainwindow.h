@@ -8,6 +8,10 @@
 #include <memory>
 #include <QMediaPlayer>
 #include <QFileDialog>
+#include <QDir>
+#include <QStatusBar>
+#include <QSettings>
+#include <QCloseEvent>
 
 
 QT_BEGIN_NAMESPACE
@@ -65,6 +69,9 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+protected:
+    void closeEvent (QCloseEvent *event);
 
 private slots:
     void process();
@@ -131,6 +138,10 @@ private slots:
 
     void on_pushButton_music_back_clicked();
 
+    void on_pushButton_open_music_clicked();
+
+    void on_verticalSlider_volume_valueChanged(int value);
+
 private:
     Ui::MainWindow *ui;
     QVector <exercise_t> m_exercise_list;
@@ -139,6 +150,7 @@ private:
     int showCurrentExercise();
     int resetCurrentExercise();
     int startExercise(exercise_t* _exercise);
+    int playSong(int index);
 
     QMediaPlayer *m_notify;
 
@@ -150,6 +162,11 @@ private:
     std::atomic<bool> m_pause;
     std::mutex m_lock;
     int m_total_time;
+
+    QString m_musicDir;
+    QVector <QString> m_mp3_list;
+    int m_song_index;
+    QMediaPlayer* m_current_song;
 
 
     std::atomic<bool> m_musicPause;
