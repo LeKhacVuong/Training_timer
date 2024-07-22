@@ -3,6 +3,7 @@
 #include <QThread>
 #include <QDebug>
 #include <QTimer>
+#include <QmessageBox>
 
 QString secondsToMinutes(int seconds) {
     if(seconds < 0)
@@ -24,13 +25,17 @@ MainWindow::MainWindow(QWidget *parent)
     resetCurrentExercise();
     m_pause = false;
 
+    ui->pushButton_music->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
+    ui->pushButton_music_next->setIcon(style()->standardIcon(QStyle::SP_MediaSkipForward));
+    ui->pushButton_music_back->setIcon(style()->standardIcon(QStyle::SP_MediaSkipBackward));
+
+    ui->pushButton_stop->setDisabled(true);
+
     m_notify = new QMediaPlayer(this);
+    m_musicPause = true;
 
-    m_notify->setMedia(QUrl::fromLocalFile(":/sounds/sounds/nofity_5s.mp3"));
-
-    if(m_notify->error() != QMediaPlayer::Error::NoError){
-        qDebug() << "open mp3 file failed";
-    }
+    m_notify->setMedia(QUrl("qrc:/sounds/sounds/nofity_5s.mp3"));
+    m_notify->setVolume(100);
 }
 
 void MainWindow::process(){
@@ -87,13 +92,14 @@ void MainWindow::process(){
                 }
         }
         showTimer();
-        m_current_time_out--;
-        m_total_time--;
-        qDebug() << "Timer count " << QString::number(m_current_time_out);
         if(m_current_time_out == 5){
             qDebug() << "now notify";
             m_notify->play();
         }
+        m_current_time_out--;
+        m_total_time--;
+        qDebug() << "Timer count " << QString::number(m_current_time_out);
+
     }
 }
 
@@ -193,9 +199,9 @@ int MainWindow::addExercise(exercise_t _exercise){
 
     int total_time = 0;
     for(auto& item: m_exercise_list){
-        total_time+= (item.m_set_time + item.m_rest_time) * item.m_set;
+        total_time+= (item.m_set_time + item.m_rest_time + PREPRARE_TIME) * item.m_set;
     }
-
+    total_time+= FINISH_TIME;
     m_total_time = total_time;
 
     ui->label_total_time->setText(secondsToMinutes(total_time));
@@ -382,6 +388,7 @@ void MainWindow::on_pushButton_delete_clicked()
 void MainWindow::on_pushButton_start_clicked()
 {
     ui->pushButton_delete->setDisabled(true);
+    ui->pushButton_stop->setDisabled(false);
 
     if(m_exercise_list.empty()){
         ui->label_pause->setText("No exercise");
@@ -395,6 +402,13 @@ void MainWindow::on_pushButton_start_clicked()
 
     ui->pushButton_start->setDisabled(true);
 
+    int total_time = 0;
+    for(auto& item: m_exercise_list){
+        total_time+= (item.m_set_time + item.m_rest_time + PREPRARE_TIME) * item.m_set;
+    }
+    total_time+= FINISH_TIME;
+    m_total_time = total_time;
+
 }
 
 
@@ -402,11 +416,21 @@ void MainWindow::on_pushButton_pause_clicked()
 {
     m_pause = !m_pause;
     ui->label_pause->setText(m_pause?"Pausing!!!":"");
+    if(m_pause){
+        m_notify->pause();
+    }else{
+        m_notify->play();
+    }
 }
 
 
 void MainWindow::on_pushButton_stop_clicked()
 {
+
+    if(QMessageBox::question(this, "Do you want to stop training program", "Process will be loss") == QMessageBox::No){
+       return;
+    }
+    m_notify->stop();
     ui->pushButton_delete->setDisabled(false);
     ui->pushButton_start->setDisabled(false);
     resetCurrentExercise();
@@ -416,5 +440,30 @@ void MainWindow::on_pushButton_stop_clicked()
         item->setBackground(QBrush(Qt::white));
     }
     showTimer();
+}
+
+
+void MainWindow::on_pushButton_music_clicked()
+{
+    m_musicPause = !m_musicPause;
+    if(m_musicPause){
+        ui->pushButton_music->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
+        qDebug() << "now stop background music";
+    }else{
+        ui->pushButton_music->setIcon(style()->standardIcon(QStyle::SP_MediaPause));
+        qDebug() << "now play background music";
+    }
+}
+
+
+void MainWindow::on_pushButton_music_next_clicked()
+{
+
+}
+
+
+void MainWindow::on_pushButton_music_back_clicked()
+{
+
 }
 

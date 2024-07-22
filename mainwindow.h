@@ -7,6 +7,7 @@
 #include <mutex>
 #include <memory>
 #include <QMediaPlayer>
+#include <QFileDialog>
 
 
 QT_BEGIN_NAMESPACE
@@ -14,6 +15,8 @@ namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
 #define PREPRARE_TIME 5
+#define FINISH_TIME   60
+
 
 typedef enum ProcessStep{
     STEP_1_IDLE,
@@ -122,6 +125,12 @@ private slots:
 
     void on_pushButton_stop_clicked();
 
+    void on_pushButton_music_clicked();
+
+    void on_pushButton_music_next_clicked();
+
+    void on_pushButton_music_back_clicked();
+
 private:
     Ui::MainWindow *ui;
     QVector <exercise_t> m_exercise_list;
@@ -142,6 +151,8 @@ private:
     std::mutex m_lock;
     int m_total_time;
 
+
+    std::atomic<bool> m_musicPause;
     int updateExerciseList();
 };
 #endif // MAINWINDOW_H
