@@ -40,7 +40,7 @@ typedef struct exercise_t{
 }exercise_t;
 
 static exercise_t exer_dip              = {.m_name = "Dip"                      ,.m_set = 4,  .m_reps = 12, .m_set_time = 120, .m_rest_time = 90};
-static exercise_t exer_bch_pr           = {.m_name = "Bench Press"              ,.m_set = 4,  .m_reps = 12, .m_set_time = 90, .m_rest_time = 75};
+static exercise_t exer_bch_pr           = {.m_name = "Bench  Press"              ,.m_set = 4,  .m_reps = 12, .m_set_time = 90, .m_rest_time = 75};
 static exercise_t exer_icl_bch_pr       = {.m_name = "Incline Bench Press"      ,.m_set = 4,  .m_reps = 12, .m_set_time = 100, .m_rest_time = 80};
 static exercise_t exer_ovh_db           = {.m_name = "Overhead Dumbbell"        ,.m_set = 4,  .m_reps = 12, .m_set_time = 90, .m_rest_time = 75};
 static exercise_t exer_lateral_raise    = {.m_name = "Lateral Raise"            ,.m_set = 4,  .m_reps = 15, .m_set_time = 90, .m_rest_time = 90};
