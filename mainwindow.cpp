@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QTimer>
 #include <QmessageBox>
+#include <QInputDialog>
 
 QString secondsToMinutes(int seconds) {
     if(seconds < 0)
@@ -24,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
     timer->start();
     resetCurrentExercise();
     m_pause = false;
+    ui->label_pause->setText("");
 
     ui->pushButton_music->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
     ui->pushButton_music_next->setIcon(style()->standardIcon(QStyle::SP_MediaSkipForward));
@@ -62,10 +64,11 @@ MainWindow::MainWindow(QWidget *parent)
     settings.endArray();
     settings.endGroup();
     m_step = STEP_1_IDLE;
+    m_is_training_today = false;
 }
 
 void MainWindow::closeEvent (QCloseEvent *event){
-    if(QMessageBox::question(this, "Do you want to exits", "App will be close") == QMessageBox::No){
+    if(QMessageBox::question(this, "Exit app ?", "App will be close") == QMessageBox::No){
        event->ignore();
        return;
     }
@@ -115,8 +118,11 @@ void MainWindow::process(){
     static int tick = 0;
     tick++;
 
-    if(m_pause)
+    if(m_pause){
+        m_total_time_training++;
+        showTimer();
         return;
+    }
 
     if(m_current_exercise){
         if(m_current_time_out <= 0){
@@ -152,12 +158,12 @@ void MainWindow::process(){
                         }
                     }
                     if(m_current_exercise+1 != m_exercise_list.end()){
+                        m_pause = true;
+                        QMessageBox::information(this, "Finsh " + m_current_exercise->m_name, "Prepare " + (m_current_exercise+1)->m_name);
+                        m_pause = false;
                         startExercise(m_current_exercise+1);
                     }else{
-                        showTimer();
-                        resetCurrentExercise();
-                        qDebug() << "Done all exercise";
-                        ui->label_pause->setText("Done for today!!!");
+                        finishProgramHandle();
                     }
                     showCurrentExercise();
                     break;
@@ -171,7 +177,7 @@ void MainWindow::process(){
             m_notify->play();
         }
         m_current_time_out--;
-        m_total_time--;
+        m_total_time_remain--;
         qDebug() << "Timer count " << QString::number(m_current_time_out);
 
     }
@@ -210,7 +216,8 @@ int MainWindow::showTimer(){
     default:
         break;
     }
-    ui->label_total_remain_time->setText(secondsToMinutes(m_total_time));
+    ui->label_total_time->setText(secondsToMinutes(m_total_time_training));
+    ui->label_total_remain_time->setText(secondsToMinutes(m_total_time_remain));
     ui->label_timer_remain->setText(secondsToMinutes(m_current_time_out));
     return 0;
 }
@@ -238,6 +245,8 @@ int MainWindow::startExercise(exercise_t* _exercise){
             item->setBackground(QBrush(Qt::yellow));
         }
     }
+    ui->pushButton_pause->setEnabled(true);
+    ui->pushButton_skip->setEnabled(true);
     return 0;
 }
 
@@ -257,6 +266,52 @@ int MainWindow::playSong(int index){
     if(!m_musicPause)
         m_current_song->play();
     return 0;
+}
+
+int MainWindow::finishProgramHandle(){
+    showTimer();
+    resetCurrentExercise();
+    qDebug() << "Done all exercise";
+    m_pause = true;
+    QMessageBox::information(this, "Finish", "Go to eating");
+    m_pause = false;
+    ui->pushButton_delete->setEnabled(true);
+    ui->pushButton_start->setEnabled(true);
+    ui->pushButton_pause->setEnabled(false);
+    ui->pushButton_skip->setEnabled(false);
+    ui->pushButton_stop->setEnabled(false);
+
+
+    if(QMessageBox::question(this, "Train note ?", "Program today is done, save it?") == QMessageBox::No){
+        for(int i = 0; i < 5; i++){
+            bool ok;
+            QString password = QInputDialog::getText(this, "Confirm ignore ?", "Enter vuonglk to confirm ignore", QLineEdit::Normal, "", &ok);
+            if (ok && password == "vuonglk") {
+                QMessageBox::information(this, "Success", "Ignore today result");
+                m_is_training_today = false;
+                break;
+            } else {
+                QMessageBox::warning(this, "Fail", "Try again time " + QString::number(i + 1) + " on 5 time");
+            }
+        }
+    }
+
+     QMessageBox::information(this, "Save data", "Training report been saved");
+
+     saveWorkoutData();
+
+    return 0;
+}
+
+void MainWindow::saveWorkoutData() {
+    qDebug() << "Now save data";
+    QFile file("workout_data.txt");
+    if (file.open(QIODevice::WriteOnly | QIODevice::Append)) {
+        qDebug() << "Open workout data ";
+        QTextStream out(&file);
+        out << "date" << ", " << "exercise" << ", " << "duration";
+        file.close();
+    }
 }
 
 int MainWindow::showCurrentExercise(){
@@ -291,6 +346,9 @@ int MainWindow::addExercise(exercise_t _exercise){
         }
     }
 
+    ui->pushButton_start->setEnabled(true);
+    ui->pushButton_delete->setEnabled(true);
+
     m_exercise_list.push_back(_exercise);
     qDebug() << "Add exercise " << _exercise.m_name <<" to today list!!!";
 
@@ -300,12 +358,11 @@ int MainWindow::addExercise(exercise_t _exercise){
     for(auto& item: m_exercise_list){
         total_time+= (item.m_set_time + item.m_rest_time + PREPRARE_TIME) * item.m_set + FINISH_TIME;
     }
-    m_total_time = total_time;
+    m_total_time_remain = m_total_time_training = total_time;
 
     ui->label_total_time->setText(secondsToMinutes(total_time));
     return 0;
 }
-
 
 void MainWindow::on_pushButton_dip_clicked()
 {
@@ -480,6 +537,14 @@ void MainWindow::on_pushButton_delete_clicked()
         total_time+= (item.m_set_time + item.m_rest_time + PREPRARE_TIME) * item.m_set + FINISH_TIME;
     }
     ui->label_total_time->setText(secondsToMinutes(total_time));
+
+    if(m_exercise_list.empty()){
+        ui->pushButton_start->setEnabled(false);
+        ui->pushButton_pause->setEnabled(false);
+        ui->pushButton_delete->setEnabled(false);
+        ui->pushButton_skip->setEnabled(false);
+        ui->pushButton_stop->setEnabled(false);
+    }
 }
 
 
@@ -501,7 +566,7 @@ void MainWindow::on_pushButton_start_clicked()
     for(auto& item: m_exercise_list){
         total_time+= (item.m_set_time + item.m_rest_time + PREPRARE_TIME) * item.m_set + FINISH_TIME;
     }
-    m_total_time = total_time;
+    m_total_time_remain = m_total_time_training = total_time;
     ui->pushButton_delete->setDisabled(true);
     ui->pushButton_stop->setDisabled(false);
 }
@@ -511,6 +576,8 @@ void MainWindow::on_pushButton_pause_clicked()
 {
     m_pause = !m_pause;
     ui->label_pause->setText(m_pause?"Pausing!!!":"");
+    ui->pushButton_pause->setText(m_pause?"Resume":"Pause");
+    showTimer();
 
     if(m_current_time_out <= 5 && m_step != STEP_1_IDLE){
         if(m_pause){
@@ -530,8 +597,11 @@ void MainWindow::on_pushButton_stop_clicked()
     }
 
     m_notify->stop();
-    ui->pushButton_delete->setDisabled(false);
-    ui->pushButton_start->setDisabled(false);
+    ui->pushButton_delete->setEnabled(true);
+    ui->pushButton_start->setEnabled(true);
+    ui->pushButton_pause->setEnabled(false);
+    ui->pushButton_skip->setEnabled(false);
+    ui->pushButton_stop->setEnabled(false);
     resetCurrentExercise();
     for (int i = 0; i < ui->listWidget->count(); ++i) {
         QListWidgetItem *item = ui->listWidget->item(i);
@@ -539,6 +609,7 @@ void MainWindow::on_pushButton_stop_clicked()
         item->setBackground(QBrush(Qt::white));
     }
     showTimer();
+
 }
 
 
@@ -681,8 +752,12 @@ void MainWindow::on_comboBox_dir_list_currentTextChanged(const QString &arg1)
 
 void MainWindow::on_pushButton_clear_list_clicked()
 {
+    if(QMessageBox::question(this, "Clear data ?", "Choose ok to continue") == QMessageBox::No){
+       return;
+    }
     m_current_song->stop();
     m_mp3_list.clear();
+    m_music_dir_list.clear();
     ui->pushButton_music->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
     qDebug() << "now clear background music";
     m_current_song->pause();
@@ -706,12 +781,12 @@ void MainWindow::on_checkBox_loop_stateChanged(int arg1)
 
 void MainWindow::on_pushButton_skip_clicked()
 {
-    if(QMessageBox::question(this, "Do you want to skip", "Jumo to next step") == QMessageBox::No){
+    if(QMessageBox::question(this, "Skip ?", "Jumo to next step") == QMessageBox::No){
        return;
     }
 
     if(m_current_exercise && m_step != STEP_1_IDLE){
-        m_total_time -= m_current_time_out;
+        m_total_time_remain -= m_current_time_out;
         switch (m_step){
         case STEP_1_IDLE:
             break;
@@ -745,15 +820,11 @@ void MainWindow::on_pushButton_skip_clicked()
             }
             if(m_current_exercise+1 != m_exercise_list.end()){
                 m_pause = true;
-                QMessageBox::information(this, "You finish " + m_current_exercise->m_name, "Now preprare for next exercise");
+                QMessageBox::information(this, "Finsh " + m_current_exercise->m_name, "Prepare " + (m_current_exercise+1)->m_name);
                 m_pause = false;
                 startExercise(m_current_exercise+1);
             }else{
-                showTimer();
-                resetCurrentExercise();
-                qDebug() << "Done all exercise";
-                QMessageBox::information(this, "You finish today program", "You can go to eat now");
-                ui->label_pause->setText("Done for today!!!");
+                finishProgramHandle();
             }
             showCurrentExercise();
             break;
@@ -763,5 +834,10 @@ void MainWindow::on_pushButton_skip_clicked()
     }
     showTimer();
     m_notify->stop();
+}
+
+
+void MainWindow::on_actionTraining_report_triggered()
+{
 }
 

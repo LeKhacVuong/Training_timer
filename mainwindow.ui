@@ -41,7 +41,7 @@
      <enum>Qt::LeftToRight</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="tab_push">
      <attribute name="title">
@@ -412,9 +412,14 @@
     <layout class="QVBoxLayout" name="control_list">
      <item>
       <widget class="QPushButton" name="pushButton_start">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="font">
         <font>
-         <pointsize>12</pointsize>
+         <pointsize>16</pointsize>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="text">
@@ -424,9 +429,14 @@
      </item>
      <item>
       <widget class="QPushButton" name="pushButton_pause">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="font">
         <font>
-         <pointsize>12</pointsize>
+         <pointsize>16</pointsize>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="text">
@@ -436,9 +446,14 @@
      </item>
      <item>
       <widget class="QPushButton" name="pushButton_stop">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="font">
         <font>
-         <pointsize>12</pointsize>
+         <pointsize>16</pointsize>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="text">
@@ -484,15 +499,17 @@
    <widget class="QLabel" name="label_excercise_list">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>-10</y>
-      <width>151</width>
+      <x>380</x>
+      <y>0</y>
+      <width>281</width>
       <height>51</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <pointsize>16</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
      </font>
     </property>
     <property name="text">
@@ -518,6 +535,9 @@
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_delete">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>550</x>
@@ -529,6 +549,8 @@
     <property name="font">
      <font>
       <pointsize>12</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
      </font>
     </property>
     <property name="text">
@@ -574,6 +596,8 @@
        <property name="font">
         <font>
          <pointsize>18</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
         </font>
        </property>
        <property name="text">
@@ -586,6 +610,8 @@
        <property name="font">
         <font>
          <pointsize>18</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
         </font>
        </property>
        <property name="text">
@@ -646,6 +672,8 @@
        <property name="font">
         <font>
          <pointsize>18</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
         </font>
        </property>
        <property name="text">
@@ -658,6 +686,8 @@
        <property name="font">
         <font>
          <pointsize>18</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
         </font>
        </property>
        <property name="text">
@@ -670,15 +700,17 @@
    <widget class="QLabel" name="label_excercise_list_2">
     <property name="geometry">
      <rect>
-      <x>730</x>
+      <x>720</x>
       <y>-20</y>
-      <width>201</width>
+      <width>211</width>
       <height>71</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <pointsize>16</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
      </font>
     </property>
     <property name="text">
@@ -706,154 +738,30 @@
    <widget class="QLabel" name="label_pause">
     <property name="geometry">
      <rect>
-      <x>780</x>
-      <y>250</y>
-      <width>111</width>
+      <x>790</x>
+      <y>220</y>
+      <width>121</width>
       <height>31</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <pointsize>12</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
      </font>
     </property>
     <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="comboBox_dir_list">
-    <property name="geometry">
-     <rect>
-      <x>670</x>
-      <y>430</y>
-      <width>331</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_song_name">
-    <property name="geometry">
-     <rect>
-      <x>690</x>
-      <y>460</y>
-      <width>301</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Song name</string>
-    </property>
-    <property name="scaledContents">
-     <bool>false</bool>
+     <string>Pausing!!!</string>
     </property>
    </widget>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>670</x>
-      <y>480</y>
-      <width>331</width>
-      <height>91</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_4">
-     <item>
-      <widget class="QSlider" name="verticalSlider_volume">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
-          <widget class="QPushButton" name="pushButton_music_back">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pushButton_music">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pushButton_music_next">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Preferred</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>10</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="checkBox_mix">
-           <property name="text">
-            <string>Mix</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="checkBox_loop">
-           <property name="text">
-            <string>Loop</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_4">
-       <item>
-        <widget class="QPushButton" name="pushButton_open_music">
-         <property name="text">
-          <string>Open</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_clear_list">
-         <property name="text">
-          <string>Clear list</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="">
-    <property name="geometry">
-     <rect>
-      <x>671</x>
-      <y>291</y>
-      <width>331</width>
-      <height>113</height>
+      <x>660</x>
+      <y>250</y>
+      <width>361</width>
+      <height>175</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -863,7 +771,7 @@
         <widget class="QLabel" name="label_excercise_list_3">
          <property name="font">
           <font>
-           <pointsize>22</pointsize>
+           <pointsize>24</pointsize>
            <weight>75</weight>
            <bold>true</bold>
            <stylestrategy>PreferDefault</stylestrategy>
@@ -876,6 +784,16 @@
        </item>
        <item>
         <widget class="QPushButton" name="pushButton_skip">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
          <property name="text">
           <string>Skip</string>
          </property>
@@ -887,11 +805,14 @@
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="spacing">
+          <number>6</number>
+         </property>
          <item>
           <widget class="QLabel" name="label_11">
            <property name="font">
             <font>
-             <pointsize>18</pointsize>
+             <pointsize>28</pointsize>
             </font>
            </property>
            <property name="text">
@@ -903,11 +824,11 @@
           <widget class="QLabel" name="label_13">
            <property name="font">
             <font>
-             <pointsize>18</pointsize>
+             <pointsize>28</pointsize>
             </font>
            </property>
            <property name="text">
-            <string>Time Remain</string>
+            <string>Remain</string>
            </property>
           </widget>
          </item>
@@ -919,7 +840,9 @@
           <widget class="QLabel" name="label_timer_stage">
            <property name="font">
             <font>
-             <pointsize>18</pointsize>
+             <pointsize>36</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
             </font>
            </property>
            <property name="text">
@@ -931,11 +854,174 @@
           <widget class="QLabel" name="label_timer_remain">
            <property name="font">
             <font>
-             <pointsize>18</pointsize>
+             <pointsize>36</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
             </font>
            </property>
            <property name="text">
             <string>0</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>660</x>
+      <y>444</y>
+      <width>371</width>
+      <height>121</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_6">
+     <item>
+      <widget class="QComboBox" name="comboBox_dir_list"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_song_name">
+       <property name="text">
+        <string>Song name</string>
+       </property>
+       <property name="scaledContents">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QSlider" name="verticalSlider_volume">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QPushButton" name="pushButton_music_back">
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_music">
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_music_next">
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Preferred</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>10</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBox_mix">
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Mix</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBox_loop">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Loop</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="QPushButton" name="pushButton_open_music">
+           <property name="font">
+            <font>
+             <pointsize>14</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Open</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_clear_list">
+           <property name="font">
+            <font>
+             <pointsize>14</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Clear list</string>
            </property>
           </widget>
          </item>
@@ -955,8 +1041,20 @@
      <height>20</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuOption">
+    <property name="title">
+     <string>Option</string>
+    </property>
+    <addaction name="actionTraining_report"/>
+   </widget>
+   <addaction name="menuOption"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionTraining_report">
+   <property name="text">
+    <string>Training report</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

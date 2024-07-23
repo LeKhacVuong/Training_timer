@@ -10,6 +10,7 @@
 #define UI_MAINWINDOW_H
 
 #include <QtCore/QVariant>
+#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QComboBox>
@@ -18,6 +19,7 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSlider>
@@ -32,6 +34,7 @@ QT_BEGIN_NAMESPACE
 class Ui_MainWindow
 {
 public:
+    QAction *actionTraining_report;
     QWidget *centralwidget;
     QTabWidget *tabWidget;
     QWidget *tab_push;
@@ -95,9 +98,22 @@ public:
     QLabel *label_excercise_list_2;
     QLabel *label_slash;
     QLabel *label_pause;
+    QWidget *layoutWidget;
+    QVBoxLayout *verticalLayout_5;
+    QHBoxLayout *horizontalLayout_5;
+    QLabel *label_excercise_list_3;
+    QPushButton *pushButton_skip;
+    QHBoxLayout *horizontalLayout;
+    QVBoxLayout *verticalLayout;
+    QLabel *label_11;
+    QLabel *label_13;
+    QVBoxLayout *verticalLayout_2;
+    QLabel *label_timer_stage;
+    QLabel *label_timer_remain;
+    QWidget *widget;
+    QVBoxLayout *verticalLayout_6;
     QComboBox *comboBox_dir_list;
     QLabel *label_song_name;
-    QWidget *layoutWidget;
     QHBoxLayout *horizontalLayout_4;
     QSlider *verticalSlider_volume;
     QVBoxLayout *verticalLayout_3;
@@ -112,19 +128,8 @@ public:
     QVBoxLayout *verticalLayout_4;
     QPushButton *pushButton_open_music;
     QPushButton *pushButton_clear_list;
-    QWidget *widget;
-    QVBoxLayout *verticalLayout_5;
-    QHBoxLayout *horizontalLayout_5;
-    QLabel *label_excercise_list_3;
-    QPushButton *pushButton_skip;
-    QHBoxLayout *horizontalLayout;
-    QVBoxLayout *verticalLayout;
-    QLabel *label_11;
-    QLabel *label_13;
-    QVBoxLayout *verticalLayout_2;
-    QLabel *label_timer_stage;
-    QLabel *label_timer_remain;
     QMenuBar *menubar;
+    QMenu *menuOption;
     QStatusBar *statusbar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -134,6 +139,8 @@ public:
         MainWindow->setEnabled(true);
         MainWindow->resize(1066, 669);
         MainWindow->setMaximumSize(QSize(1066, 669));
+        actionTraining_report = new QAction(MainWindow);
+        actionTraining_report->setObjectName(QString::fromUtf8("actionTraining_report"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         tabWidget = new QTabWidget(centralwidget);
@@ -331,35 +338,42 @@ public:
         control_list->setContentsMargins(0, 0, 0, 0);
         pushButton_start = new QPushButton(verticalLayoutWidget);
         pushButton_start->setObjectName(QString::fromUtf8("pushButton_start"));
-        pushButton_start->setFont(font);
+        pushButton_start->setEnabled(false);
+        QFont font1;
+        font1.setPointSize(16);
+        font1.setBold(false);
+        font1.setWeight(50);
+        pushButton_start->setFont(font1);
 
         control_list->addWidget(pushButton_start);
 
         pushButton_pause = new QPushButton(verticalLayoutWidget);
         pushButton_pause->setObjectName(QString::fromUtf8("pushButton_pause"));
-        pushButton_pause->setFont(font);
+        pushButton_pause->setEnabled(false);
+        pushButton_pause->setFont(font1);
 
         control_list->addWidget(pushButton_pause);
 
         pushButton_stop = new QPushButton(verticalLayoutWidget);
         pushButton_stop->setObjectName(QString::fromUtf8("pushButton_stop"));
-        pushButton_stop->setFont(font);
+        pushButton_stop->setEnabled(false);
+        pushButton_stop->setFont(font1);
 
         control_list->addWidget(pushButton_stop);
 
         listWidget = new QListWidget(centralwidget);
         listWidget->setObjectName(QString::fromUtf8("listWidget"));
         listWidget->setGeometry(QRect(330, 40, 321, 351));
-        QFont font1;
-        font1.setPointSize(16);
-        listWidget->setFont(font1);
+        QFont font2;
+        font2.setPointSize(16);
+        listWidget->setFont(font2);
         label_total_remain_time = new QLabel(centralwidget);
         label_total_remain_time->setObjectName(QString::fromUtf8("label_total_remain_time"));
         label_total_remain_time->setGeometry(QRect(330, 400, 111, 16));
         label_total_remain_time->setFont(font);
         label_excercise_list = new QLabel(centralwidget);
         label_excercise_list->setObjectName(QString::fromUtf8("label_excercise_list"));
-        label_excercise_list->setGeometry(QRect(410, -10, 151, 51));
+        label_excercise_list->setGeometry(QRect(380, 0, 281, 51));
         label_excercise_list->setFont(font1);
         label_total_time = new QLabel(centralwidget);
         label_total_time->setObjectName(QString::fromUtf8("label_total_time"));
@@ -367,8 +381,13 @@ public:
         label_total_time->setFont(font);
         pushButton_delete = new QPushButton(centralwidget);
         pushButton_delete->setObjectName(QString::fromUtf8("pushButton_delete"));
+        pushButton_delete->setEnabled(false);
         pushButton_delete->setGeometry(QRect(550, 360, 91, 27));
-        pushButton_delete->setFont(font);
+        QFont font3;
+        font3.setPointSize(12);
+        font3.setBold(true);
+        font3.setWeight(75);
+        pushButton_delete->setFont(font3);
         formLayoutWidget = new QWidget(centralwidget);
         formLayoutWidget->setObjectName(QString::fromUtf8("formLayoutWidget"));
         formLayoutWidget->setGeometry(QRect(670, 40, 291, 181));
@@ -377,69 +396,73 @@ public:
         formLayout->setContentsMargins(0, 0, 0, 0);
         label = new QLabel(formLayoutWidget);
         label->setObjectName(QString::fromUtf8("label"));
-        QFont font2;
-        font2.setPointSize(18);
-        label->setFont(font2);
+        QFont font4;
+        font4.setPointSize(18);
+        label->setFont(font4);
 
         formLayout->setWidget(0, QFormLayout::LabelRole, label);
 
         label_current_name = new QLabel(formLayoutWidget);
         label_current_name->setObjectName(QString::fromUtf8("label_current_name"));
-        label_current_name->setFont(font2);
+        label_current_name->setFont(font4);
 
         formLayout->setWidget(0, QFormLayout::FieldRole, label_current_name);
 
         label_current_rep_text = new QLabel(formLayoutWidget);
         label_current_rep_text->setObjectName(QString::fromUtf8("label_current_rep_text"));
-        label_current_rep_text->setFont(font2);
+        QFont font5;
+        font5.setPointSize(18);
+        font5.setBold(true);
+        font5.setWeight(75);
+        label_current_rep_text->setFont(font5);
 
         formLayout->setWidget(1, QFormLayout::LabelRole, label_current_rep_text);
 
         label_current_rep = new QLabel(formLayoutWidget);
         label_current_rep->setObjectName(QString::fromUtf8("label_current_rep"));
-        label_current_rep->setFont(font2);
+        label_current_rep->setFont(font5);
 
         formLayout->setWidget(1, QFormLayout::FieldRole, label_current_rep);
 
         label_7 = new QLabel(formLayoutWidget);
         label_7->setObjectName(QString::fromUtf8("label_7"));
-        label_7->setFont(font2);
+        label_7->setFont(font4);
 
         formLayout->setWidget(2, QFormLayout::LabelRole, label_7);
 
         label_current_set_time = new QLabel(formLayoutWidget);
         label_current_set_time->setObjectName(QString::fromUtf8("label_current_set_time"));
-        label_current_set_time->setFont(font2);
+        label_current_set_time->setFont(font4);
 
         formLayout->setWidget(2, QFormLayout::FieldRole, label_current_set_time);
 
         label_current_rest_text = new QLabel(formLayoutWidget);
         label_current_rest_text->setObjectName(QString::fromUtf8("label_current_rest_text"));
-        label_current_rest_text->setFont(font2);
+        label_current_rest_text->setFont(font4);
 
         formLayout->setWidget(3, QFormLayout::LabelRole, label_current_rest_text);
 
         label_current_rest_time = new QLabel(formLayoutWidget);
         label_current_rest_time->setObjectName(QString::fromUtf8("label_current_rest_time"));
-        label_current_rest_time->setFont(font2);
+        label_current_rest_time->setFont(font4);
 
         formLayout->setWidget(3, QFormLayout::FieldRole, label_current_rest_time);
 
         label_set_remain_text = new QLabel(formLayoutWidget);
         label_set_remain_text->setObjectName(QString::fromUtf8("label_set_remain_text"));
-        label_set_remain_text->setFont(font2);
+        label_set_remain_text->setFont(font5);
 
         formLayout->setWidget(4, QFormLayout::LabelRole, label_set_remain_text);
 
         label_set_remain = new QLabel(formLayoutWidget);
         label_set_remain->setObjectName(QString::fromUtf8("label_set_remain"));
-        label_set_remain->setFont(font2);
+        label_set_remain->setFont(font5);
 
         formLayout->setWidget(4, QFormLayout::FieldRole, label_set_remain);
 
         label_excercise_list_2 = new QLabel(centralwidget);
         label_excercise_list_2->setObjectName(QString::fromUtf8("label_excercise_list_2"));
-        label_excercise_list_2->setGeometry(QRect(730, -20, 201, 71));
+        label_excercise_list_2->setGeometry(QRect(720, -20, 211, 71));
         label_excercise_list_2->setFont(font1);
         label_slash = new QLabel(centralwidget);
         label_slash->setObjectName(QString::fromUtf8("label_slash"));
@@ -447,22 +470,107 @@ public:
         label_slash->setFont(font);
         label_pause = new QLabel(centralwidget);
         label_pause->setObjectName(QString::fromUtf8("label_pause"));
-        label_pause->setGeometry(QRect(780, 250, 111, 31));
-        label_pause->setFont(font);
-        comboBox_dir_list = new QComboBox(centralwidget);
-        comboBox_dir_list->setObjectName(QString::fromUtf8("comboBox_dir_list"));
-        comboBox_dir_list->setGeometry(QRect(670, 430, 331, 22));
-        label_song_name = new QLabel(centralwidget);
-        label_song_name->setObjectName(QString::fromUtf8("label_song_name"));
-        label_song_name->setGeometry(QRect(690, 460, 301, 20));
-        label_song_name->setScaledContents(false);
+        label_pause->setGeometry(QRect(790, 220, 121, 31));
+        label_pause->setFont(font3);
         layoutWidget = new QWidget(centralwidget);
         layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
-        layoutWidget->setGeometry(QRect(670, 480, 331, 91));
-        horizontalLayout_4 = new QHBoxLayout(layoutWidget);
+        layoutWidget->setGeometry(QRect(660, 250, 361, 175));
+        verticalLayout_5 = new QVBoxLayout(layoutWidget);
+        verticalLayout_5->setObjectName(QString::fromUtf8("verticalLayout_5"));
+        verticalLayout_5->setContentsMargins(0, 0, 0, 0);
+        horizontalLayout_5 = new QHBoxLayout();
+        horizontalLayout_5->setObjectName(QString::fromUtf8("horizontalLayout_5"));
+        label_excercise_list_3 = new QLabel(layoutWidget);
+        label_excercise_list_3->setObjectName(QString::fromUtf8("label_excercise_list_3"));
+        QFont font6;
+        font6.setPointSize(24);
+        font6.setBold(true);
+        font6.setWeight(75);
+        font6.setStyleStrategy(QFont::PreferDefault);
+        label_excercise_list_3->setFont(font6);
+
+        horizontalLayout_5->addWidget(label_excercise_list_3);
+
+        pushButton_skip = new QPushButton(layoutWidget);
+        pushButton_skip->setObjectName(QString::fromUtf8("pushButton_skip"));
+        pushButton_skip->setEnabled(false);
+        QFont font7;
+        font7.setPointSize(14);
+        font7.setBold(true);
+        font7.setWeight(75);
+        pushButton_skip->setFont(font7);
+
+        horizontalLayout_5->addWidget(pushButton_skip);
+
+
+        verticalLayout_5->addLayout(horizontalLayout_5);
+
+        horizontalLayout = new QHBoxLayout();
+        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+        verticalLayout = new QVBoxLayout();
+        verticalLayout->setSpacing(6);
+        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        label_11 = new QLabel(layoutWidget);
+        label_11->setObjectName(QString::fromUtf8("label_11"));
+        QFont font8;
+        font8.setPointSize(28);
+        label_11->setFont(font8);
+
+        verticalLayout->addWidget(label_11);
+
+        label_13 = new QLabel(layoutWidget);
+        label_13->setObjectName(QString::fromUtf8("label_13"));
+        label_13->setFont(font8);
+
+        verticalLayout->addWidget(label_13);
+
+
+        horizontalLayout->addLayout(verticalLayout);
+
+        verticalLayout_2 = new QVBoxLayout();
+        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
+        label_timer_stage = new QLabel(layoutWidget);
+        label_timer_stage->setObjectName(QString::fromUtf8("label_timer_stage"));
+        QFont font9;
+        font9.setPointSize(36);
+        font9.setBold(true);
+        font9.setWeight(75);
+        label_timer_stage->setFont(font9);
+
+        verticalLayout_2->addWidget(label_timer_stage);
+
+        label_timer_remain = new QLabel(layoutWidget);
+        label_timer_remain->setObjectName(QString::fromUtf8("label_timer_remain"));
+        label_timer_remain->setFont(font9);
+
+        verticalLayout_2->addWidget(label_timer_remain);
+
+
+        horizontalLayout->addLayout(verticalLayout_2);
+
+
+        verticalLayout_5->addLayout(horizontalLayout);
+
+        widget = new QWidget(centralwidget);
+        widget->setObjectName(QString::fromUtf8("widget"));
+        widget->setGeometry(QRect(660, 444, 371, 121));
+        verticalLayout_6 = new QVBoxLayout(widget);
+        verticalLayout_6->setObjectName(QString::fromUtf8("verticalLayout_6"));
+        verticalLayout_6->setContentsMargins(0, 0, 0, 0);
+        comboBox_dir_list = new QComboBox(widget);
+        comboBox_dir_list->setObjectName(QString::fromUtf8("comboBox_dir_list"));
+
+        verticalLayout_6->addWidget(comboBox_dir_list);
+
+        label_song_name = new QLabel(widget);
+        label_song_name->setObjectName(QString::fromUtf8("label_song_name"));
+        label_song_name->setScaledContents(false);
+
+        verticalLayout_6->addWidget(label_song_name);
+
+        horizontalLayout_4 = new QHBoxLayout();
         horizontalLayout_4->setObjectName(QString::fromUtf8("horizontalLayout_4"));
-        horizontalLayout_4->setContentsMargins(0, 0, 0, 0);
-        verticalSlider_volume = new QSlider(layoutWidget);
+        verticalSlider_volume = new QSlider(widget);
         verticalSlider_volume->setObjectName(QString::fromUtf8("verticalSlider_volume"));
         verticalSlider_volume->setOrientation(Qt::Vertical);
 
@@ -472,18 +580,25 @@ public:
         verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
-        pushButton_music_back = new QPushButton(layoutWidget);
+        pushButton_music_back = new QPushButton(widget);
         pushButton_music_back->setObjectName(QString::fromUtf8("pushButton_music_back"));
+        QFont font10;
+        font10.setPointSize(10);
+        font10.setBold(true);
+        font10.setWeight(75);
+        pushButton_music_back->setFont(font10);
 
         horizontalLayout_2->addWidget(pushButton_music_back);
 
-        pushButton_music = new QPushButton(layoutWidget);
+        pushButton_music = new QPushButton(widget);
         pushButton_music->setObjectName(QString::fromUtf8("pushButton_music"));
+        pushButton_music->setFont(font10);
 
         horizontalLayout_2->addWidget(pushButton_music);
 
-        pushButton_music_next = new QPushButton(layoutWidget);
+        pushButton_music_next = new QPushButton(widget);
         pushButton_music_next->setObjectName(QString::fromUtf8("pushButton_music_next"));
+        pushButton_music_next->setFont(font10);
 
         horizontalLayout_2->addWidget(pushButton_music_next);
 
@@ -496,13 +611,18 @@ public:
 
         horizontalLayout_3->addItem(horizontalSpacer);
 
-        checkBox_mix = new QCheckBox(layoutWidget);
+        checkBox_mix = new QCheckBox(widget);
         checkBox_mix->setObjectName(QString::fromUtf8("checkBox_mix"));
+        checkBox_mix->setFont(font10);
 
         horizontalLayout_3->addWidget(checkBox_mix);
 
-        checkBox_loop = new QCheckBox(layoutWidget);
+        checkBox_loop = new QCheckBox(widget);
         checkBox_loop->setObjectName(QString::fromUtf8("checkBox_loop"));
+        QFont font11;
+        font11.setBold(true);
+        font11.setWeight(75);
+        checkBox_loop->setFont(font11);
 
         horizontalLayout_3->addWidget(checkBox_loop);
 
@@ -514,97 +634,43 @@ public:
 
         verticalLayout_4 = new QVBoxLayout();
         verticalLayout_4->setObjectName(QString::fromUtf8("verticalLayout_4"));
-        pushButton_open_music = new QPushButton(layoutWidget);
+        pushButton_open_music = new QPushButton(widget);
         pushButton_open_music->setObjectName(QString::fromUtf8("pushButton_open_music"));
+        QFont font12;
+        font12.setPointSize(14);
+        pushButton_open_music->setFont(font12);
 
         verticalLayout_4->addWidget(pushButton_open_music);
 
-        pushButton_clear_list = new QPushButton(layoutWidget);
+        pushButton_clear_list = new QPushButton(widget);
         pushButton_clear_list->setObjectName(QString::fromUtf8("pushButton_clear_list"));
+        pushButton_clear_list->setFont(font12);
 
         verticalLayout_4->addWidget(pushButton_clear_list);
 
 
         horizontalLayout_4->addLayout(verticalLayout_4);
 
-        widget = new QWidget(centralwidget);
-        widget->setObjectName(QString::fromUtf8("widget"));
-        widget->setGeometry(QRect(671, 291, 331, 113));
-        verticalLayout_5 = new QVBoxLayout(widget);
-        verticalLayout_5->setObjectName(QString::fromUtf8("verticalLayout_5"));
-        verticalLayout_5->setContentsMargins(0, 0, 0, 0);
-        horizontalLayout_5 = new QHBoxLayout();
-        horizontalLayout_5->setObjectName(QString::fromUtf8("horizontalLayout_5"));
-        label_excercise_list_3 = new QLabel(widget);
-        label_excercise_list_3->setObjectName(QString::fromUtf8("label_excercise_list_3"));
-        QFont font3;
-        font3.setPointSize(22);
-        font3.setBold(true);
-        font3.setWeight(75);
-        font3.setStyleStrategy(QFont::PreferDefault);
-        label_excercise_list_3->setFont(font3);
 
-        horizontalLayout_5->addWidget(label_excercise_list_3);
-
-        pushButton_skip = new QPushButton(widget);
-        pushButton_skip->setObjectName(QString::fromUtf8("pushButton_skip"));
-
-        horizontalLayout_5->addWidget(pushButton_skip);
-
-
-        verticalLayout_5->addLayout(horizontalLayout_5);
-
-        horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
-        verticalLayout = new QVBoxLayout();
-        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-        label_11 = new QLabel(widget);
-        label_11->setObjectName(QString::fromUtf8("label_11"));
-        label_11->setFont(font2);
-
-        verticalLayout->addWidget(label_11);
-
-        label_13 = new QLabel(widget);
-        label_13->setObjectName(QString::fromUtf8("label_13"));
-        label_13->setFont(font2);
-
-        verticalLayout->addWidget(label_13);
-
-
-        horizontalLayout->addLayout(verticalLayout);
-
-        verticalLayout_2 = new QVBoxLayout();
-        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
-        label_timer_stage = new QLabel(widget);
-        label_timer_stage->setObjectName(QString::fromUtf8("label_timer_stage"));
-        label_timer_stage->setFont(font2);
-
-        verticalLayout_2->addWidget(label_timer_stage);
-
-        label_timer_remain = new QLabel(widget);
-        label_timer_remain->setObjectName(QString::fromUtf8("label_timer_remain"));
-        label_timer_remain->setFont(font2);
-
-        verticalLayout_2->addWidget(label_timer_remain);
-
-
-        horizontalLayout->addLayout(verticalLayout_2);
-
-
-        verticalLayout_5->addLayout(horizontalLayout);
+        verticalLayout_6->addLayout(horizontalLayout_4);
 
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
         menubar->setGeometry(QRect(0, 0, 1066, 20));
+        menuOption = new QMenu(menubar);
+        menuOption->setObjectName(QString::fromUtf8("menuOption"));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));
         MainWindow->setStatusBar(statusbar);
 
+        menubar->addAction(menuOption->menuAction());
+        menuOption->addAction(actionTraining_report);
+
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(3);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -613,6 +679,7 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
+        actionTraining_report->setText(QApplication::translate("MainWindow", "Training report", nullptr));
         pushButton_dip->setText(QApplication::translate("MainWindow", "Dip", nullptr));
         pushButton_bench_press->setText(QApplication::translate("MainWindow", "Bench Press", nullptr));
         pushButton_incline_bp->setText(QApplication::translate("MainWindow", "Incline Bench Press", nullptr));
@@ -660,7 +727,13 @@ public:
         label_set_remain->setText(QApplication::translate("MainWindow", "0", nullptr));
         label_excercise_list_2->setText(QApplication::translate("MainWindow", "Current Excercise", nullptr));
         label_slash->setText(QApplication::translate("MainWindow", "/", nullptr));
-        label_pause->setText(QString());
+        label_pause->setText(QApplication::translate("MainWindow", "Pausing!!!", nullptr));
+        label_excercise_list_3->setText(QApplication::translate("MainWindow", "Timer ", nullptr));
+        pushButton_skip->setText(QApplication::translate("MainWindow", "Skip", nullptr));
+        label_11->setText(QApplication::translate("MainWindow", "Stage", nullptr));
+        label_13->setText(QApplication::translate("MainWindow", "Remain", nullptr));
+        label_timer_stage->setText(QApplication::translate("MainWindow", "0", nullptr));
+        label_timer_remain->setText(QApplication::translate("MainWindow", "0", nullptr));
         label_song_name->setText(QApplication::translate("MainWindow", "Song name", nullptr));
         pushButton_music_back->setText(QString());
         pushButton_music->setText(QString());
@@ -669,12 +742,7 @@ public:
         checkBox_loop->setText(QApplication::translate("MainWindow", "Loop", nullptr));
         pushButton_open_music->setText(QApplication::translate("MainWindow", "Open", nullptr));
         pushButton_clear_list->setText(QApplication::translate("MainWindow", "Clear list", nullptr));
-        label_excercise_list_3->setText(QApplication::translate("MainWindow", "Timer ", nullptr));
-        pushButton_skip->setText(QApplication::translate("MainWindow", "Skip", nullptr));
-        label_11->setText(QApplication::translate("MainWindow", "Stage", nullptr));
-        label_13->setText(QApplication::translate("MainWindow", "Time Remain", nullptr));
-        label_timer_stage->setText(QApplication::translate("MainWindow", "0", nullptr));
-        label_timer_remain->setText(QApplication::translate("MainWindow", "0", nullptr));
+        menuOption->setTitle(QApplication::translate("MainWindow", "Option", nullptr));
     } // retranslateUi
 
 };

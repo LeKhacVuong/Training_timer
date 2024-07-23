@@ -13,6 +13,10 @@
 #include <QSettings>
 #include <QCloseEvent>
 #include <QRandomGenerator>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlTableModel>
+#include <QTableView>
 
 
 QT_BEGIN_NAMESPACE
@@ -40,7 +44,7 @@ typedef struct exercise_t{
 }exercise_t;
 
 static exercise_t exer_dip              = {.m_name = "Dip"                      ,.m_set = 4,  .m_reps = 12, .m_set_time = 120, .m_rest_time = 90};
-static exercise_t exer_bch_pr           = {.m_name = "Bench  Press"              ,.m_set = 4,  .m_reps = 12, .m_set_time = 90, .m_rest_time = 75};
+static exercise_t exer_bch_pr           = {.m_name = "Bench  Press"             ,.m_set = 4,  .m_reps = 12, .m_set_time = 90, .m_rest_time = 75};
 static exercise_t exer_icl_bch_pr       = {.m_name = "Incline Bench Press"      ,.m_set = 4,  .m_reps = 12, .m_set_time = 100, .m_rest_time = 80};
 static exercise_t exer_ovh_db           = {.m_name = "Overhead Dumbbell"        ,.m_set = 4,  .m_reps = 12, .m_set_time = 90, .m_rest_time = 75};
 static exercise_t exer_lateral_raise    = {.m_name = "Lateral Raise"            ,.m_set = 4,  .m_reps = 15, .m_set_time = 90, .m_rest_time = 90};
@@ -160,6 +164,8 @@ private slots:
 
     void on_pushButton_skip_clicked();
 
+    void on_actionTraining_report_triggered();
+
 private:
     Ui::MainWindow *ui;
     QVector <exercise_t> m_exercise_list;
@@ -169,7 +175,9 @@ private:
     int resetCurrentExercise();
     int startExercise(exercise_t* _exercise);
     int playSong(int index);
+    int finishProgramHandle();
 
+    void saveWorkoutData();
     QMediaPlayer *m_notify;
 
     exercise_t* m_current_exercise;
@@ -179,7 +187,8 @@ private:
     ProcessStep m_step;
     std::atomic<bool> m_pause;
     std::mutex m_lock;
-    int m_total_time;
+    int m_total_time_remain;
+    int m_total_time_training;
 
     QVector <QString> m_music_dir_list;   QString m_musicDir;
     QVector <QString> m_mp3_list;
@@ -188,7 +197,10 @@ private:
     std::atomic<bool> m_mix;
     std::atomic<bool> m_loop;
 
+
     std::atomic<bool> m_musicPause;
     int updateExerciseList();
+
+    std::atomic<bool> m_is_training_today;
 };
 #endif // MAINWINDOW_H
