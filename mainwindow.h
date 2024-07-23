@@ -12,6 +12,7 @@
 #include <QStatusBar>
 #include <QSettings>
 #include <QCloseEvent>
+#include <QRandomGenerator>
 
 
 QT_BEGIN_NAMESPACE
@@ -38,28 +39,33 @@ typedef struct exercise_t{
     int m_rest_time;
 }exercise_t;
 
-
-
-static exercise_t exer_dip              = {.m_name = "Dip"                      ,.m_set = 4, .m_reps = 10, .m_set_time = 120, .m_rest_time = 90};
-static exercise_t exer_bch_pr           = {.m_name = "Bench Press"              ,.m_set = 4,  .m_reps = 12, .m_set_time = 100, .m_rest_time = 80};
+static exercise_t exer_dip              = {.m_name = "Dip"                      ,.m_set = 4,  .m_reps = 12, .m_set_time = 120, .m_rest_time = 90};
+static exercise_t exer_bch_pr           = {.m_name = "Bench Press"              ,.m_set = 4,  .m_reps = 12, .m_set_time = 90, .m_rest_time = 75};
 static exercise_t exer_icl_bch_pr       = {.m_name = "Incline Bench Press"      ,.m_set = 4,  .m_reps = 12, .m_set_time = 100, .m_rest_time = 80};
-static exercise_t exer_ovh_db           = {.m_name = "Overhead Dumbbell"        ,.m_set = 4,  .m_reps = 12, .m_set_time = 100, .m_rest_time = 80};
-static exercise_t exer_lateral_raise    = {.m_name = "Lateral Raise"            ,.m_set = 4,  .m_reps = 12, .m_set_time = 100, .m_rest_time = 80};
-static exercise_t exer_flying_chest     = {.m_name = "Flying Chest"             ,.m_set = 4,  .m_reps = 12, .m_set_time = 100, .m_rest_time = 80};
+static exercise_t exer_ovh_db           = {.m_name = "Overhead Dumbbell"        ,.m_set = 4,  .m_reps = 12, .m_set_time = 90, .m_rest_time = 75};
+static exercise_t exer_lateral_raise    = {.m_name = "Lateral Raise"            ,.m_set = 4,  .m_reps = 15, .m_set_time = 90, .m_rest_time = 90};
+static exercise_t exer_flying_chest     = {.m_name = "Flying Chest"             ,.m_set = 4,  .m_reps = 12, .m_set_time = 90, .m_rest_time = 80};
 
-static exercise_t exer_pull_up          = {.m_name = "Pull Up"                  ,.m_set = 4,  .m_reps = 12, .m_set_time = 100, .m_rest_time = 80};
-static exercise_t exer_chin_up          = {.m_name = "Chin Up"                  ,.m_set = 4,  .m_reps = 12, .m_set_time = 100, .m_rest_time = 80};
-static exercise_t exer_db_row           = {.m_name = "Dumbbell Row"             ,.m_set = 4,  .m_reps = 12, .m_set_time = 100, .m_rest_time = 80};
+static exercise_t exer_pull_up          = {.m_name = "Pull Up"                  ,.m_set = 4,  .m_reps = 12, .m_set_time = 100, .m_rest_time = 90};
+static exercise_t exer_chin_up          = {.m_name = "Chin Up"                  ,.m_set = 4,  .m_reps = 12, .m_set_time = 100, .m_rest_time = 90};
+static exercise_t exer_db_row           = {.m_name = "Dumbbell Row"             ,.m_set = 4,  .m_reps = 12, .m_set_time = 120, .m_rest_time = 60};
 static exercise_t exer_bar_row          = {.m_name = "Barbell Row"              ,.m_set = 4,  .m_reps = 12, .m_set_time = 100, .m_rest_time = 80};
-static exercise_t exer_db_curl          = {.m_name = "Dumbell Curl"             ,.m_set = 4,  .m_reps = 12, .m_set_time = 100, .m_rest_time = 80};
-static exercise_t exer_bar_curl         = {.m_name = "Barbell Curl"             ,.m_set = 4,  .m_reps = 12, .m_set_time = 100, .m_rest_time = 80};
-static exercise_t exer_harmer_curl      = {.m_name = "Harmer Curl"              ,.m_set = 4,  .m_reps = 12, .m_set_time = 100, .m_rest_time = 80};
+static exercise_t exer_db_curl          = {.m_name = "Dumbell Curl"             ,.m_set = 4,  .m_reps = 12, .m_set_time = 90, .m_rest_time = 75};
+static exercise_t exer_bar_curl         = {.m_name = "Barbell Curl"             ,.m_set = 4,  .m_reps = 12, .m_set_time = 90, .m_rest_time = 70};
+static exercise_t exer_harmer_curl      = {.m_name = "Harmer Curl"              ,.m_set = 4,  .m_reps = 12, .m_set_time = 90, .m_rest_time = 80};
 
-static exercise_t exer_db_split_sq      = {.m_name = "Dumbbell Split Squat"     ,.m_set = 4,  .m_reps = 10, .m_set_time = 120, .m_rest_time = 90};
-static exercise_t exer_db_roman_sq      = {.m_name = "Dumbbell Roman Squat"     ,.m_set = 4,  .m_reps = 10, .m_set_time = 120, .m_rest_time = 90};
-static exercise_t exer_db_bench_sq      = {.m_name = "Dumbbell Bench Squat"     ,.m_set = 4,  .m_reps = 10, .m_set_time = 120, .m_rest_time = 90};
-static exercise_t exer_db_font_sq       = {.m_name = "Dumbbell Font Squat"      ,.m_set = 4,  .m_reps = 10, .m_set_time = 120, .m_rest_time = 90};
-static exercise_t exer_db_goblet_sq     = {.m_name = "Dumbbell Goblet Squat"    ,.m_set = 4,  .m_reps = 10, .m_set_time = 120, .m_rest_time = 90};
+static exercise_t exer_db_split_sq      = {.m_name = "Dumbbell Split Squat"     ,.m_set = 4,  .m_reps = 12, .m_set_time = 120, .m_rest_time = 90};
+static exercise_t exer_db_roman_sq      = {.m_name = "Dumbbell Roman Squat"     ,.m_set = 4,  .m_reps = 15, .m_set_time = 100, .m_rest_time = 80};
+static exercise_t exer_db_bench_sq      = {.m_name = "Dumbbell Bench Squat"     ,.m_set = 4,  .m_reps = 12, .m_set_time = 140, .m_rest_time = 75};
+static exercise_t exer_db_font_sq       = {.m_name = "Dumbbell Font Squat"      ,.m_set = 4,  .m_reps = 12, .m_set_time = 100, .m_rest_time = 90};
+static exercise_t exer_db_goblet_sq     = {.m_name = "Dumbbell Goblet Squat"    ,.m_set = 4,  .m_reps = 15, .m_set_time = 100, .m_rest_time = 80};
+
+static exercise_t exer_eliptical        = {.m_name = "Eliptical"                ,.m_set = 1,  .m_reps = 1,  .m_set_time = 4*60, .m_rest_time = 60};
+static exercise_t exer_sit_up           = {.m_name = "Sit Up"                   ,.m_set = 1,  .m_reps = 15, .m_set_time = 90, .m_rest_time = 60};
+static exercise_t exer_blank            = {.m_name = "Blank"                    ,.m_set = 1,  .m_reps = 1, .m_set_time = 120, .m_rest_time = 45};
+static exercise_t exer_side_blank       = {.m_name = "Side Blank"               ,.m_set = 2,  .m_reps = 1, .m_set_time = 120, .m_rest_time = 45};
+static exercise_t exer_burpees          = {.m_name = "Burpees"                  ,.m_set = 1,  .m_reps = 20, .m_set_time = 120, .m_rest_time = 60};
+static exercise_t exer_rope_jump        = {.m_name = "Rope Jump"                ,.m_set = 1,  .m_reps = 1, .m_set_time = 3*60, .m_rest_time = 90};
 
 
 class MainWindow : public QMainWindow
@@ -72,6 +78,8 @@ public:
 
 protected:
     void closeEvent (QCloseEvent *event);
+
+    void songEndEvent(QMediaPlayer::MediaStatus status);
 
 private slots:
     void process();
@@ -144,6 +152,14 @@ private slots:
 
     void on_comboBox_dir_list_currentTextChanged(const QString &arg1);
 
+    void on_pushButton_clear_list_clicked();
+
+    void on_checkBox_mix_stateChanged(int arg1);
+
+    void on_checkBox_loop_stateChanged(int arg1);
+
+    void on_pushButton_skip_clicked();
+
 private:
     Ui::MainWindow *ui;
     QVector <exercise_t> m_exercise_list;
@@ -169,7 +185,8 @@ private:
     QVector <QString> m_mp3_list;
     int m_song_index;
     QMediaPlayer* m_current_song;
-
+    std::atomic<bool> m_mix;
+    std::atomic<bool> m_loop;
 
     std::atomic<bool> m_musicPause;
     int updateExerciseList();

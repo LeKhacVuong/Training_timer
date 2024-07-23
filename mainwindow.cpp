@@ -24,7 +24,6 @@ MainWindow::MainWindow(QWidget *parent)
     timer->start();
     resetCurrentExercise();
     m_pause = false;
-    m_current_song = nullptr;
 
     ui->pushButton_music->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
     ui->pushButton_music_next->setIcon(style()->standardIcon(QStyle::SP_MediaSkipForward));
@@ -33,29 +32,36 @@ MainWindow::MainWindow(QWidget *parent)
     ui->pushButton_stop->setDisabled(true);
 
     m_musicPause = true;
+    m_current_song = new QMediaPlayer(this);
+    connect(m_current_song, &QMediaPlayer::mediaStatusChanged, this, &MainWindow::songEndEvent);
 
     ui->verticalSlider_volume->setMaximum(100);
     ui->verticalSlider_volume->setMinimum(1);
-    ui->verticalSlider_volume->setValue(10);
+    ui->verticalSlider_volume->setValue(5);
 
     m_notify = new QMediaPlayer(this);
     m_notify->setMedia(QUrl("qrc:/sounds/sounds/nofity_5s.mp3"));
     m_notify->setVolume(100);
-
     QSettings settings("YourCompany", "YourApp");
+
+    m_mix = ui->checkBox_mix->isChecked();
+    m_loop = ui->checkBox_loop->isChecked();
 
     settings.beginGroup("Vuong");
     int size = settings.beginReadArray("config");
 
     for (int i = 0; i < size; ++i) {
         settings.setArrayIndex(i);
-        m_musicDir.push_back(settings.value("value").toString());
-        ui->comboBox_dir_list->addItem(m_musicDir.at(i));
+        QString dir = settings.value("value").toString();
+        if(QDir(dir).exists()){
+            m_music_dir_list.push_back(dir);
+            ui->comboBox_dir_list->addItem(m_music_dir_list.at(i));
+        }
     }
 
     settings.endArray();
     settings.endGroup();
-
+    m_step = STEP_1_IDLE;
 }
 
 void MainWindow::closeEvent (QCloseEvent *event){
@@ -72,12 +78,37 @@ void MainWindow::closeEvent (QCloseEvent *event){
     for (int i = 0; i < m_music_dir_list.size(); ++i) {
         settings.setArrayIndex(i);
         settings.setValue("value", m_music_dir_list.at(i));
+        qDebug() << "save dir " << m_music_dir_list.at(i);
     }
 
     settings.endArray();
     settings.endGroup();
 
     event->accept();
+}
+
+void MainWindow::songEndEvent(QMediaPlayer::MediaStatus status){
+    if(status == QMediaPlayer::EndOfMedia){
+        qDebug() << "song end, play next song";
+        if(m_loop){
+            qDebug() << "loop again song";
+            m_current_song->play();
+            return;
+        }
+
+        if(m_mix){
+            int new_index = 0;
+            do{
+                new_index = QRandomGenerator::global()->bounded(0, m_mp3_list.size());
+            }while(new_index == m_song_index);
+            m_song_index = new_index;
+        }else{
+            m_song_index++;
+            if(m_song_index >= m_mp3_list.size())
+                m_song_index = 0;
+        }
+        playSong(m_song_index);
+    }
 }
 
 void MainWindow::process(){
@@ -108,7 +139,7 @@ void MainWindow::process(){
                     }else{
                         qDebug() << "Finish " << m_current_exercise->m_name;
                         m_step = STEP_5_FINISH;
-                        m_current_time_out = 6;
+                        m_current_time_out = FINISH_TIME;
                     }
                     showCurrentExercise();
                     break;
@@ -123,6 +154,7 @@ void MainWindow::process(){
                     if(m_current_exercise+1 != m_exercise_list.end()){
                         startExercise(m_current_exercise+1);
                     }else{
+                        showTimer();
                         resetCurrentExercise();
                         qDebug() << "Done all exercise";
                         ui->label_pause->setText("Done for today!!!");
@@ -134,7 +166,7 @@ void MainWindow::process(){
                 }
         }
         showTimer();
-        if(m_current_time_out == 5){
+        if(m_current_time_out == 5 && m_step != STEP_1_IDLE){
             qDebug() << "now notify";
             m_notify->play();
         }
@@ -187,7 +219,7 @@ int MainWindow::resetCurrentExercise(){
     m_current_exercise = nullptr;
     m_set_remain = 0;
     m_step = STEP_1_IDLE;
-    m_current_time_out = 0;
+    m_current_time_out = 1;
     return 0;
 }
 
@@ -214,17 +246,16 @@ int MainWindow::playSong(int index){
         qDebug() << "Cannot play song";
         return -1;
     }
-    if(m_current_song == nullptr){
-        m_current_song = new QMediaPlayer(this);
-    }
+
     m_current_song->stop();
+     qDebug() << "now play song index " << QString::number(m_song_index);
     qDebug() << "now play song " << m_musicDir + '/' + m_mp3_list.at(index);
     ui->label_song_name->setText(m_mp3_list.at(index));
     m_current_song->setMedia(QUrl(m_musicDir + '/' + m_mp3_list.at(index)));
-    if(!m_musicPause)
-        m_current_song->play();
 
     m_current_song->setVolume(ui->verticalSlider_volume->value());
+    if(!m_musicPause)
+        m_current_song->play();
     return 0;
 }
 
@@ -243,16 +274,23 @@ int MainWindow::showCurrentExercise(){
 int MainWindow::addExercise(exercise_t _exercise){
     std::lock_guard<std::mutex> lockGuard(m_lock);
 
-    _exercise.m_set_time = 15;
-    _exercise.m_rest_time = 15;
-    _exercise.m_set = 3;
-
+    int count = 0;
     for(auto& item: m_exercise_list){
-        if(_exercise.m_name == item.m_name){
+        if(item.m_name.contains(_exercise.m_name)){
+            count++;
+        }
+    }
+
+    if(count > 0){
+        if(ui->tabWidget->currentIndex() == 3){
+            qDebug() << "choose a cardio";
+            _exercise.m_name.append("-").append(QString::number(count));
+        }else{
             qDebug() << "Exercise " << _exercise.m_name <<" is exist!!!";
             return -1;
         }
     }
+
     m_exercise_list.push_back(_exercise);
     qDebug() << "Add exercise " << _exercise.m_name <<" to today list!!!";
 
@@ -260,9 +298,8 @@ int MainWindow::addExercise(exercise_t _exercise){
 
     int total_time = 0;
     for(auto& item: m_exercise_list){
-        total_time+= (item.m_set_time + item.m_rest_time + PREPRARE_TIME) * item.m_set;
+        total_time+= (item.m_set_time + item.m_rest_time + PREPRARE_TIME) * item.m_set + FINISH_TIME;
     }
-    total_time+= FINISH_TIME;
     m_total_time = total_time;
 
     ui->label_total_time->setText(secondsToMinutes(total_time));
@@ -308,109 +345,109 @@ void MainWindow::on_pushButton_fly_chest_clicked()
 
 void MainWindow::on_pushButton_pull_up_clicked()
 {
-
+    this->addExercise(exer_pull_up);
 }
 
 
 void MainWindow::on_pushButton_chin_up_clicked()
 {
-
+    this->addExercise(exer_chin_up);
 }
 
 
 void MainWindow::on_pushButton_db_row_clicked()
 {
-
+    this->addExercise(exer_db_row);
 }
 
 
 void MainWindow::on_pushButton_barbell_row_clicked()
 {
-
+    this->addExercise(exer_bar_row);
 }
 
 
 void MainWindow::on_pushButton_db_curl_clicked()
 {
-
+    this->addExercise(exer_bar_curl);
 }
 
 
 void MainWindow::on_pushButton_barbell_curl_clicked()
 {
-
+    this->addExercise(exer_bar_curl);
 }
 
 
 void MainWindow::on_pushButton_harmer_curl_clicked()
 {
-
+    this->addExercise(exer_harmer_curl);
 }
 
 
 void MainWindow::on_pushButton_db_spl_squat_clicked()
 {
-
+    this->addExercise(exer_db_split_sq);
 }
 
 
 void MainWindow::on_pushButton_db_roman_deadlift_clicked()
 {
-
+    this->addExercise(exer_db_roman_sq);
 }
 
 
 void MainWindow::on_pushButton_db_single_squat_bench_clicked()
 {
-
+    this->addExercise(exer_db_bench_sq);
 }
 
 
 void MainWindow::on_pushButton_db_front_squat_clicked()
 {
-
+    this->addExercise(exer_db_font_sq);
 }
 
 
 void MainWindow::on_pushButton_db_goblet_squat_clicked()
 {
-
+    this->addExercise(exer_db_goblet_sq);
 }
 
 
 void MainWindow::on_pushButton_eliptical_clicked()
 {
-
+    this->addExercise(exer_eliptical);
 }
 
 
 void MainWindow::on_pushButton_sit_up_clicked()
 {
-
+    this->addExercise(exer_sit_up);
 }
 
 
 void MainWindow::on_pushButton_blank_clicked()
 {
-
+    this->addExercise(exer_blank);
 }
 
 
 void MainWindow::on_pushButton_side_blank_clicked()
 {
-
+    this->addExercise(exer_side_blank);
 }
 
 
 void MainWindow::on_pushButton_burpees_clicked()
 {
-
+    this->addExercise(exer_burpees);
 }
 
 
 void MainWindow::on_pushButton_rope_jump_clicked()
 {
-
+    this->addExercise(exer_rope_jump);
 }
 
 
@@ -440,7 +477,7 @@ void MainWindow::on_pushButton_delete_clicked()
 
     int total_time = 0;
     for(auto& item: m_exercise_list){
-        total_time+= (item.m_set_time + item.m_rest_time) * item.m_set;
+        total_time+= (item.m_set_time + item.m_rest_time + PREPRARE_TIME) * item.m_set + FINISH_TIME;
     }
     ui->label_total_time->setText(secondsToMinutes(total_time));
 }
@@ -448,9 +485,6 @@ void MainWindow::on_pushButton_delete_clicked()
 
 void MainWindow::on_pushButton_start_clicked()
 {
-    ui->pushButton_delete->setDisabled(true);
-    ui->pushButton_stop->setDisabled(false);
-
     if(m_exercise_list.empty()){
         ui->label_pause->setText("No exercise");
         return;
@@ -465,11 +499,11 @@ void MainWindow::on_pushButton_start_clicked()
 
     int total_time = 0;
     for(auto& item: m_exercise_list){
-        total_time+= (item.m_set_time + item.m_rest_time + PREPRARE_TIME) * item.m_set;
+        total_time+= (item.m_set_time + item.m_rest_time + PREPRARE_TIME) * item.m_set + FINISH_TIME;
     }
-    total_time+= FINISH_TIME;
     m_total_time = total_time;
-
+    ui->pushButton_delete->setDisabled(true);
+    ui->pushButton_stop->setDisabled(false);
 }
 
 
@@ -477,10 +511,13 @@ void MainWindow::on_pushButton_pause_clicked()
 {
     m_pause = !m_pause;
     ui->label_pause->setText(m_pause?"Pausing!!!":"");
-    if(m_pause){
-        m_notify->pause();
-    }else{
-        m_notify->play();
+
+    if(m_current_time_out <= 5 && m_step != STEP_1_IDLE){
+        if(m_pause){
+           m_notify->pause();
+        }else{
+           m_notify->play();
+        }
     }
 }
 
@@ -491,6 +528,7 @@ void MainWindow::on_pushButton_stop_clicked()
     if(QMessageBox::question(this, "Do you want to stop training program", "Process will be loss") == QMessageBox::No){
        return;
     }
+
     m_notify->stop();
     ui->pushButton_delete->setDisabled(false);
     ui->pushButton_start->setDisabled(false);
@@ -532,18 +570,35 @@ void MainWindow::on_pushButton_music_clicked()
 
 void MainWindow::on_pushButton_music_next_clicked()
 {
-    m_song_index++;
-    if(m_song_index >= m_mp3_list.size())
-        m_song_index = 0;
+    if(m_mix){
+        int new_index = 0;
+        do{
+            new_index = QRandomGenerator::global()->bounded(0, m_mp3_list.size());
+        }while(new_index == m_song_index);
+        m_song_index = new_index;
+    }else{
+        m_song_index++;
+        if(m_song_index >= m_mp3_list.size())
+            m_song_index = 0;
+    }
     playSong(m_song_index);
 }
 
 
 void MainWindow::on_pushButton_music_back_clicked()
 {
-    m_song_index--;
-    if(m_song_index <= 0)
-        m_song_index = m_mp3_list.size() - 1;
+    if(m_mix){
+        int new_index = 0;
+        do{
+            new_index = QRandomGenerator::global()->bounded(0, m_mp3_list.size());
+        }while(new_index == m_song_index);
+        m_song_index = new_index;
+    }else{
+        m_song_index--;
+        if(m_song_index <= 0)
+            m_song_index = m_mp3_list.size() - 1;
+    }
+
     playSong(m_song_index);
 }
 
@@ -621,5 +676,92 @@ void MainWindow::on_comboBox_dir_list_currentTextChanged(const QString &arg1)
 
     m_song_index = 0;
     playSong(m_song_index);
+}
+
+
+void MainWindow::on_pushButton_clear_list_clicked()
+{
+    m_current_song->stop();
+    m_mp3_list.clear();
+    ui->pushButton_music->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
+    qDebug() << "now clear background music";
+    m_current_song->pause();
+    m_musicPause = true;
+    ui->label_song_name->setText("none");
+    ui->comboBox_dir_list->clear();
+}
+
+
+void MainWindow::on_checkBox_mix_stateChanged(int arg1)
+{
+    m_mix = arg1;
+}
+
+
+void MainWindow::on_checkBox_loop_stateChanged(int arg1)
+{
+    m_loop = arg1;
+}
+
+
+void MainWindow::on_pushButton_skip_clicked()
+{
+    if(QMessageBox::question(this, "Do you want to skip", "Jumo to next step") == QMessageBox::No){
+       return;
+    }
+
+    if(m_current_exercise && m_step != STEP_1_IDLE){
+        m_total_time -= m_current_time_out;
+        switch (m_step){
+        case STEP_1_IDLE:
+            break;
+        case STEP_2_PREPRAING:
+            m_step = STEP_3_TRAINING;
+            m_current_time_out = m_current_exercise->m_set_time;
+            break;
+        case STEP_3_TRAINING:
+            m_step = STEP_4_RESTING;
+            m_current_time_out = m_current_exercise->m_rest_time;
+            break;
+        case STEP_4_RESTING:
+            m_set_remain--;
+            if(m_set_remain > 0){
+                m_step = STEP_2_PREPRAING;
+                m_current_time_out = PREPRARE_TIME;
+            }else{
+                qDebug() << "Finish " << m_current_exercise->m_name;
+                m_step = STEP_5_FINISH;
+                m_current_time_out = FINISH_TIME;
+            }
+            showCurrentExercise();
+            break;
+        case STEP_5_FINISH:
+            for (int i = 0; i < ui->listWidget->count(); ++i) {
+                QListWidgetItem *item = ui->listWidget->item(i);
+                if (item->text() == m_current_exercise->m_name) {
+                    item->setForeground(QBrush(Qt::white));
+                    item->setBackground(QBrush(Qt::gray));
+                }
+            }
+            if(m_current_exercise+1 != m_exercise_list.end()){
+                m_pause = true;
+                QMessageBox::information(this, "You finish " + m_current_exercise->m_name, "Now preprare for next exercise");
+                m_pause = false;
+                startExercise(m_current_exercise+1);
+            }else{
+                showTimer();
+                resetCurrentExercise();
+                qDebug() << "Done all exercise";
+                QMessageBox::information(this, "You finish today program", "You can go to eat now");
+                ui->label_pause->setText("Done for today!!!");
+            }
+            showCurrentExercise();
+            break;
+        default:
+            break;
+        }
+    }
+    showTimer();
+    m_notify->stop();
 }
 
