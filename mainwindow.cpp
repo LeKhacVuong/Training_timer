@@ -36,11 +36,26 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->verticalSlider_volume->setMaximum(100);
     ui->verticalSlider_volume->setMinimum(1);
-    ui->verticalSlider_volume->setValue(50);
+    ui->verticalSlider_volume->setValue(10);
 
     m_notify = new QMediaPlayer(this);
     m_notify->setMedia(QUrl("qrc:/sounds/sounds/nofity_5s.mp3"));
     m_notify->setVolume(100);
+
+    QSettings settings("YourCompany", "YourApp");
+
+    settings.beginGroup("Vuong");
+    int size = settings.beginReadArray("config");
+
+    for (int i = 0; i < size; ++i) {
+        settings.setArrayIndex(i);
+        m_musicDir.push_back(settings.value("value").toString());
+        ui->comboBox_dir_list->addItem(m_musicDir.at(i));
+    }
+
+    settings.endArray();
+    settings.endGroup();
+
 }
 
 void MainWindow::closeEvent (QCloseEvent *event){
@@ -49,6 +64,18 @@ void MainWindow::closeEvent (QCloseEvent *event){
        return;
     }
 
+    QSettings settings("YourCompany", "YourApp");
+
+    settings.beginGroup("Vuong");
+    settings.beginWriteArray("config");
+
+    for (int i = 0; i < m_music_dir_list.size(); ++i) {
+        settings.setArrayIndex(i);
+        settings.setValue("value", m_music_dir_list.at(i));
+    }
+
+    settings.endArray();
+    settings.endGroup();
 
     event->accept();
 }
@@ -190,10 +217,14 @@ int MainWindow::playSong(int index){
     if(m_current_song == nullptr){
         m_current_song = new QMediaPlayer(this);
     }
+    m_current_song->stop();
     qDebug() << "now play song " << m_musicDir + '/' + m_mp3_list.at(index);
     ui->label_song_name->setText(m_mp3_list.at(index));
     m_current_song->setMedia(QUrl(m_musicDir + '/' + m_mp3_list.at(index)));
-    m_current_song->play();
+    if(!m_musicPause)
+        m_current_song->play();
+
+    m_current_song->setVolume(ui->verticalSlider_volume->value());
     return 0;
 }
 
@@ -532,6 +563,7 @@ void MainWindow::on_pushButton_open_music_clicked()
         return;
     }
 
+    m_mp3_list.clear();
     m_musicDir = musicDir;
     foreach(QString filename, songList) {
         m_mp3_list.push_back(filename);
@@ -541,6 +573,19 @@ void MainWindow::on_pushButton_open_music_clicked()
     for(int i = 0; i < m_mp3_list.size(); i++){
         qDebug() << m_mp3_list.at(i);
     }
+
+
+    for(auto item: m_music_dir_list){
+        if(item == musicDir){
+            ui->comboBox_dir_list->currentTextChanged(musicDir);
+            return;
+        }
+    }
+
+    m_music_dir_list.push_back(musicDir);
+    ui->comboBox_dir_list->addItem(musicDir);
+    ui->comboBox_dir_list->setCurrentText(musicDir);
+
 }
 
 
@@ -550,5 +595,31 @@ void MainWindow::on_verticalSlider_volume_valueChanged(int value)
         m_current_song->setVolume(value);
         qDebug() << "set volume to " << QString::number(value);
     }
+}
+
+
+void MainWindow::on_comboBox_dir_list_currentTextChanged(const QString &arg1)
+{
+    QDir directory(arg1);
+    QStringList songList = directory.entryList(QStringList() << "*.mp3" << "*.MP3",QDir::Files);
+
+    if(songList.isEmpty()){
+        qDebug() << "Folder not contain any song";
+        return;
+    }
+
+    m_musicDir = arg1;
+    m_mp3_list.clear();
+    foreach(QString filename, songList) {
+        m_mp3_list.push_back(filename);
+        qDebug() << "add to song list " << filename;
+    }
+
+    for(int i = 0; i < m_mp3_list.size(); i++){
+        qDebug() << m_mp3_list.at(i);
+    }
+
+    m_song_index = 0;
+    playSong(m_song_index);
 }
 

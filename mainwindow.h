@@ -142,6 +142,8 @@ private slots:
 
     void on_verticalSlider_volume_valueChanged(int value);
 
+    void on_comboBox_dir_list_currentTextChanged(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
     QVector <exercise_t> m_exercise_list;
@@ -163,7 +165,7 @@ private:
     std::mutex m_lock;
     int m_total_time;
 
-    QString m_musicDir;
+    QVector <QString> m_music_dir_list;   QString m_musicDir;
     QVector <QString> m_mp3_list;
     int m_song_index;
     QMediaPlayer* m_current_song;
