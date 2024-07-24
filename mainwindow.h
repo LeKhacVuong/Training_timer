@@ -166,6 +166,8 @@ private slots:
 
     void on_actionTraining_report_triggered();
 
+    void on_actionSetting_data_log_folder_triggered();
+
 private:
     Ui::MainWindow *ui;
     QVector <exercise_t> m_exercise_list;
@@ -179,6 +181,8 @@ private:
 
     void saveWorkoutData();
     QMediaPlayer *m_notify;
+
+    QString m_log_data_dir;
 
     exercise_t* m_current_exercise;
     int m_set_remain;

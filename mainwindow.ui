@@ -870,7 +870,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>660</x>
@@ -1046,6 +1046,7 @@
      <string>Option</string>
     </property>
     <addaction name="actionTraining_report"/>
+    <addaction name="actionSetting_data_log_folder"/>
    </widget>
    <addaction name="menuOption"/>
   </widget>
@@ -1053,6 +1054,11 @@
   <action name="actionTraining_report">
    <property name="text">
     <string>Training report</string>
+   </property>
+  </action>
+  <action name="actionSetting_data_log_folder">
+   <property name="text">
+    <string>Setting data log folder</string>
    </property>
   </action>
  </widget>

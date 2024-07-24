@@ -35,6 +35,7 @@ class Ui_MainWindow
 {
 public:
     QAction *actionTraining_report;
+    QAction *actionSetting_data_log_folder;
     QWidget *centralwidget;
     QTabWidget *tabWidget;
     QWidget *tab_push;
@@ -110,7 +111,7 @@ public:
     QVBoxLayout *verticalLayout_2;
     QLabel *label_timer_stage;
     QLabel *label_timer_remain;
-    QWidget *widget;
+    QWidget *layoutWidget1;
     QVBoxLayout *verticalLayout_6;
     QComboBox *comboBox_dir_list;
     QLabel *label_song_name;
@@ -141,6 +142,8 @@ public:
         MainWindow->setMaximumSize(QSize(1066, 669));
         actionTraining_report = new QAction(MainWindow);
         actionTraining_report->setObjectName(QString::fromUtf8("actionTraining_report"));
+        actionSetting_data_log_folder = new QAction(MainWindow);
+        actionSetting_data_log_folder->setObjectName(QString::fromUtf8("actionSetting_data_log_folder"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         tabWidget = new QTabWidget(centralwidget);
@@ -551,18 +554,18 @@ public:
 
         verticalLayout_5->addLayout(horizontalLayout);
 
-        widget = new QWidget(centralwidget);
-        widget->setObjectName(QString::fromUtf8("widget"));
-        widget->setGeometry(QRect(660, 444, 371, 121));
-        verticalLayout_6 = new QVBoxLayout(widget);
+        layoutWidget1 = new QWidget(centralwidget);
+        layoutWidget1->setObjectName(QString::fromUtf8("layoutWidget1"));
+        layoutWidget1->setGeometry(QRect(660, 444, 371, 121));
+        verticalLayout_6 = new QVBoxLayout(layoutWidget1);
         verticalLayout_6->setObjectName(QString::fromUtf8("verticalLayout_6"));
         verticalLayout_6->setContentsMargins(0, 0, 0, 0);
-        comboBox_dir_list = new QComboBox(widget);
+        comboBox_dir_list = new QComboBox(layoutWidget1);
         comboBox_dir_list->setObjectName(QString::fromUtf8("comboBox_dir_list"));
 
         verticalLayout_6->addWidget(comboBox_dir_list);
 
-        label_song_name = new QLabel(widget);
+        label_song_name = new QLabel(layoutWidget1);
         label_song_name->setObjectName(QString::fromUtf8("label_song_name"));
         label_song_name->setScaledContents(false);
 
@@ -570,7 +573,7 @@ public:
 
         horizontalLayout_4 = new QHBoxLayout();
         horizontalLayout_4->setObjectName(QString::fromUtf8("horizontalLayout_4"));
-        verticalSlider_volume = new QSlider(widget);
+        verticalSlider_volume = new QSlider(layoutWidget1);
         verticalSlider_volume->setObjectName(QString::fromUtf8("verticalSlider_volume"));
         verticalSlider_volume->setOrientation(Qt::Vertical);
 
@@ -580,7 +583,7 @@ public:
         verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
-        pushButton_music_back = new QPushButton(widget);
+        pushButton_music_back = new QPushButton(layoutWidget1);
         pushButton_music_back->setObjectName(QString::fromUtf8("pushButton_music_back"));
         QFont font10;
         font10.setPointSize(10);
@@ -590,13 +593,13 @@ public:
 
         horizontalLayout_2->addWidget(pushButton_music_back);
 
-        pushButton_music = new QPushButton(widget);
+        pushButton_music = new QPushButton(layoutWidget1);
         pushButton_music->setObjectName(QString::fromUtf8("pushButton_music"));
         pushButton_music->setFont(font10);
 
         horizontalLayout_2->addWidget(pushButton_music);
 
-        pushButton_music_next = new QPushButton(widget);
+        pushButton_music_next = new QPushButton(layoutWidget1);
         pushButton_music_next->setObjectName(QString::fromUtf8("pushButton_music_next"));
         pushButton_music_next->setFont(font10);
 
@@ -611,13 +614,13 @@ public:
 
         horizontalLayout_3->addItem(horizontalSpacer);
 
-        checkBox_mix = new QCheckBox(widget);
+        checkBox_mix = new QCheckBox(layoutWidget1);
         checkBox_mix->setObjectName(QString::fromUtf8("checkBox_mix"));
         checkBox_mix->setFont(font10);
 
         horizontalLayout_3->addWidget(checkBox_mix);
 
-        checkBox_loop = new QCheckBox(widget);
+        checkBox_loop = new QCheckBox(layoutWidget1);
         checkBox_loop->setObjectName(QString::fromUtf8("checkBox_loop"));
         QFont font11;
         font11.setBold(true);
@@ -634,7 +637,7 @@ public:
 
         verticalLayout_4 = new QVBoxLayout();
         verticalLayout_4->setObjectName(QString::fromUtf8("verticalLayout_4"));
-        pushButton_open_music = new QPushButton(widget);
+        pushButton_open_music = new QPushButton(layoutWidget1);
         pushButton_open_music->setObjectName(QString::fromUtf8("pushButton_open_music"));
         QFont font12;
         font12.setPointSize(14);
@@ -642,7 +645,7 @@ public:
 
         verticalLayout_4->addWidget(pushButton_open_music);
 
-        pushButton_clear_list = new QPushButton(widget);
+        pushButton_clear_list = new QPushButton(layoutWidget1);
         pushButton_clear_list->setObjectName(QString::fromUtf8("pushButton_clear_list"));
         pushButton_clear_list->setFont(font12);
 
@@ -667,6 +670,7 @@ public:
 
         menubar->addAction(menuOption->menuAction());
         menuOption->addAction(actionTraining_report);
+        menuOption->addAction(actionSetting_data_log_folder);
 
         retranslateUi(MainWindow);
 
@@ -680,6 +684,7 @@ public:
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
         actionTraining_report->setText(QApplication::translate("MainWindow", "Training report", nullptr));
+        actionSetting_data_log_folder->setText(QApplication::translate("MainWindow", "Setting data log folder", nullptr));
         pushButton_dip->setText(QApplication::translate("MainWindow", "Dip", nullptr));
         pushButton_bench_press->setText(QApplication::translate("MainWindow", "Bench Press", nullptr));
         pushButton_incline_bp->setText(QApplication::translate("MainWindow", "Incline Bench Press", nullptr));

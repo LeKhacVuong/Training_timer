@@ -5,6 +5,8 @@
 #include <QTimer>
 #include <QmessageBox>
 #include <QInputDialog>
+#include <QDate>
+
 
 QString secondsToMinutes(int seconds) {
     if(seconds < 0)
@@ -50,6 +52,9 @@ MainWindow::MainWindow(QWidget *parent)
     m_loop = ui->checkBox_loop->isChecked();
 
     settings.beginGroup("Vuong");
+
+    m_log_data_dir = settings.value("log_dir").toString();
+
     int size = settings.beginReadArray("config");
 
     for (int i = 0; i < size; ++i) {
@@ -74,8 +79,10 @@ void MainWindow::closeEvent (QCloseEvent *event){
     }
 
     QSettings settings("YourCompany", "YourApp");
-
     settings.beginGroup("Vuong");
+
+    settings.setValue("log_dir", m_log_data_dir);
+
     settings.beginWriteArray("config");
 
     for (int i = 0; i < m_music_dir_list.size(); ++i) {
@@ -281,6 +288,22 @@ int MainWindow::finishProgramHandle(){
     ui->pushButton_skip->setEnabled(false);
     ui->pushButton_stop->setEnabled(false);
 
+    if(m_log_data_dir.isEmpty()){
+        QString logDir = QFileDialog::getExistingDirectory(this, tr("Choose folder to save log"), QDir::homePath() + "/Desktop", QFileDialog::ReadOnly);
+        if (logDir.isEmpty()) {
+            QMessageBox::warning(this, "Error", "log folder is invalid, use default log dir");
+            m_log_data_dir = QDir::homePath() + "/Desktop";
+
+        }else{
+            m_log_data_dir = logDir;
+        }
+        if(!QDir(m_log_data_dir).exists()){
+            QDir(m_log_data_dir).mkpath(".");
+            qDebug() << "create log folder " << m_log_data_dir;
+        }
+
+        qDebug() << "log folder is: " + m_log_data_dir;
+    }
 
     if(QMessageBox::question(this, "Train note ?", "Program today is done, save it?") == QMessageBox::No){
         for(int i = 0; i < 5; i++){
@@ -304,13 +327,26 @@ int MainWindow::finishProgramHandle(){
 }
 
 void MainWindow::saveWorkoutData() {
-    qDebug() << "Now save data";
-    QFile file("workout_data.txt");
+    qDebug() << "Now save data to: " << m_log_data_dir;
+
+    QDate currentDate = QDate::currentDate();
+    QString mm_yy = currentDate.toString("MM-yy");
+    QString dd_mm_yy = currentDate.toString("dd-MM-yy");
+
+    QString file_path = m_log_data_dir + '/' + mm_yy + "-workout.txt";
+
+    QFile file(file_path);
     if (file.open(QIODevice::WriteOnly | QIODevice::Append)) {
-        qDebug() << "Open workout data ";
+        qDebug() << "Open workout data " << file_path;
         QTextStream out(&file);
-        out << "date" << ", " << "exercise" << ", " << "duration";
+        out << dd_mm_yy << " - " << secondsToMinutes(m_total_time_training) << " - ";
+        for(auto &item: m_exercise_list){
+            out << item.m_name << "  ";
+        }
+        out << "\n";
         file.close();
+    }else{
+        qDebug() << "Cannot open log file";
     }
 }
 
@@ -839,5 +875,24 @@ void MainWindow::on_pushButton_skip_clicked()
 
 void MainWindow::on_actionTraining_report_triggered()
 {
+}
+
+
+void MainWindow::on_actionSetting_data_log_folder_triggered()
+{
+    if(!m_log_data_dir.isEmpty()){
+        if(QMessageBox::question(this, "Folder exist ?", "Current log folder is "+ m_log_data_dir +", do you want to change it?") == QMessageBox::No){
+           return;
+        }
+    }
+
+    QString logDir = QFileDialog::getExistingDirectory(this, tr("Choose folder to save log"), QDir::homePath() + "/Desktop", QFileDialog::ReadOnly);
+    if (logDir.isEmpty()) {
+        return;
+    }
+
+    qDebug() << "log folder is " + logDir;
+    m_log_data_dir = logDir;
+
 }
 
