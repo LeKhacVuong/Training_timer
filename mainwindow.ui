@@ -41,7 +41,7 @@
      <enum>Qt::LeftToRight</enum>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab_push">
      <attribute name="title">
@@ -761,7 +761,7 @@
       <x>660</x>
       <y>250</y>
       <width>361</width>
-      <height>175</height>
+      <height>177</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -876,7 +876,7 @@
       <x>660</x>
       <y>444</y>
       <width>371</width>
-      <height>121</height>
+      <height>123</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_6">

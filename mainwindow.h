@@ -23,8 +23,8 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
-#define PREPRARE_TIME 5
-#define FINISH_TIME   60
+#define PREPRARE_TIME 10
+#define FINISH_TIME   45
 
 
 typedef enum ProcessStep{
@@ -43,26 +43,26 @@ typedef struct exercise_t{
     int m_rest_time;
 }exercise_t;
 
-static exercise_t exer_dip              = {.m_name = "Dip"                      ,.m_set = 4,  .m_reps = 12, .m_set_time = 120, .m_rest_time = 90};
-static exercise_t exer_bch_pr           = {.m_name = "Bench  Press"             ,.m_set = 4,  .m_reps = 12, .m_set_time = 90, .m_rest_time = 75};
-static exercise_t exer_icl_bch_pr       = {.m_name = "Incline Bench Press"      ,.m_set = 4,  .m_reps = 12, .m_set_time = 100, .m_rest_time = 80};
-static exercise_t exer_ovh_db           = {.m_name = "Overhead Dumbbell"        ,.m_set = 4,  .m_reps = 12, .m_set_time = 90, .m_rest_time = 75};
-static exercise_t exer_lateral_raise    = {.m_name = "Lateral Raise"            ,.m_set = 4,  .m_reps = 15, .m_set_time = 90, .m_rest_time = 90};
-static exercise_t exer_flying_chest     = {.m_name = "Flying Chest"             ,.m_set = 4,  .m_reps = 12, .m_set_time = 90, .m_rest_time = 80};
+static exercise_t exer_dip              = {.m_name = "Dip"                      ,.m_set = 4,  .m_reps = 12, .m_set_time = 90, .m_rest_time = 75};
+static exercise_t exer_bch_pr           = {.m_name = "Bench  Press"             ,.m_set = 4,  .m_reps = 12, .m_set_time = 80, .m_rest_time = 60};
+static exercise_t exer_icl_bch_pr       = {.m_name = "Incline Bench Press"      ,.m_set = 4,  .m_reps = 12, .m_set_time = 90, .m_rest_time = 65};
+static exercise_t exer_ovh_db           = {.m_name = "Overhead Dumbbell"        ,.m_set = 4,  .m_reps = 12, .m_set_time = 75, .m_rest_time = 70};
+static exercise_t exer_lateral_raise    = {.m_name = "Lateral Raise"            ,.m_set = 4,  .m_reps = 15, .m_set_time = 75, .m_rest_time = 60};
+static exercise_t exer_flying_chest     = {.m_name = "Flying Chest"             ,.m_set = 4,  .m_reps = 12, .m_set_time = 75, .m_rest_time = 60};
 
-static exercise_t exer_pull_up          = {.m_name = "Pull Up"                  ,.m_set = 4,  .m_reps = 12, .m_set_time = 100, .m_rest_time = 90};
-static exercise_t exer_chin_up          = {.m_name = "Chin Up"                  ,.m_set = 4,  .m_reps = 12, .m_set_time = 100, .m_rest_time = 90};
+static exercise_t exer_pull_up          = {.m_name = "Pull Up"                  ,.m_set = 4,  .m_reps = 12, .m_set_time = 90, .m_rest_time = 80};
+static exercise_t exer_chin_up          = {.m_name = "Chin Up"                  ,.m_set = 4,  .m_reps = 12, .m_set_time = 90, .m_rest_time = 80};
 static exercise_t exer_db_row           = {.m_name = "Dumbbell Row"             ,.m_set = 4,  .m_reps = 12, .m_set_time = 120, .m_rest_time = 60};
-static exercise_t exer_bar_row          = {.m_name = "Barbell Row"              ,.m_set = 4,  .m_reps = 12, .m_set_time = 100, .m_rest_time = 80};
-static exercise_t exer_db_curl          = {.m_name = "Dumbell Curl"             ,.m_set = 4,  .m_reps = 12, .m_set_time = 90, .m_rest_time = 75};
-static exercise_t exer_bar_curl         = {.m_name = "Barbell Curl"             ,.m_set = 4,  .m_reps = 12, .m_set_time = 90, .m_rest_time = 70};
-static exercise_t exer_harmer_curl      = {.m_name = "Harmer Curl"              ,.m_set = 4,  .m_reps = 12, .m_set_time = 90, .m_rest_time = 80};
+static exercise_t exer_bar_row          = {.m_name = "Barbell Row"              ,.m_set = 4,  .m_reps = 12, .m_set_time = 80, .m_rest_time = 80};
+static exercise_t exer_db_curl          = {.m_name = "Dumbell Curl"             ,.m_set = 4,  .m_reps = 12, .m_set_time = 80, .m_rest_time = 75};
+static exercise_t exer_bar_curl         = {.m_name = "Barbell Curl"             ,.m_set = 4,  .m_reps = 12, .m_set_time = 80, .m_rest_time = 70};
+static exercise_t exer_harmer_curl      = {.m_name = "Harmer Curl"              ,.m_set = 4,  .m_reps = 12, .m_set_time = 80, .m_rest_time = 70};
 
 static exercise_t exer_db_split_sq      = {.m_name = "Dumbbell Split Squat"     ,.m_set = 4,  .m_reps = 12, .m_set_time = 120, .m_rest_time = 90};
-static exercise_t exer_db_roman_sq      = {.m_name = "Dumbbell Roman Squat"     ,.m_set = 4,  .m_reps = 15, .m_set_time = 100, .m_rest_time = 80};
-static exercise_t exer_db_bench_sq      = {.m_name = "Dumbbell Bench Squat"     ,.m_set = 4,  .m_reps = 12, .m_set_time = 140, .m_rest_time = 75};
-static exercise_t exer_db_font_sq       = {.m_name = "Dumbbell Font Squat"      ,.m_set = 4,  .m_reps = 12, .m_set_time = 100, .m_rest_time = 90};
-static exercise_t exer_db_goblet_sq     = {.m_name = "Dumbbell Goblet Squat"    ,.m_set = 4,  .m_reps = 15, .m_set_time = 100, .m_rest_time = 80};
+static exercise_t exer_db_roman_sq      = {.m_name = "Dumbbell Roman Squat"     ,.m_set = 4,  .m_reps = 15, .m_set_time = 90, .m_rest_time = 80};
+static exercise_t exer_db_bench_sq      = {.m_name = "Dumbbell Bench Squat"     ,.m_set = 4,  .m_reps = 12, .m_set_time = 120, .m_rest_time = 75};
+static exercise_t exer_db_font_sq       = {.m_name = "Dumbbell Font Squat"      ,.m_set = 4,  .m_reps = 12, .m_set_time = 80, .m_rest_time = 90};
+static exercise_t exer_db_goblet_sq     = {.m_name = "Dumbbell Goblet Squat"    ,.m_set = 4,  .m_reps = 15, .m_set_time = 80, .m_rest_time = 80};
 
 static exercise_t exer_eliptical        = {.m_name = "Eliptical"                ,.m_set = 1,  .m_reps = 1,  .m_set_time = 4*60, .m_rest_time = 60};
 static exercise_t exer_sit_up           = {.m_name = "Sit Up"                   ,.m_set = 1,  .m_reps = 15, .m_set_time = 90, .m_rest_time = 60};

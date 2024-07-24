@@ -367,6 +367,9 @@ int MainWindow::showCurrentExercise(){
 int MainWindow::addExercise(exercise_t _exercise){
     std::lock_guard<std::mutex> lockGuard(m_lock);
 
+    if(m_step != STEP_1_IDLE)
+        return -1;
+
     int count = 0;
     for(auto& item: m_exercise_list){
         if(item.m_name.contains(_exercise.m_name)){
@@ -606,6 +609,7 @@ void MainWindow::on_pushButton_start_clicked()
     }
     m_total_time_remain = m_total_time_training = total_time;
     ui->pushButton_delete->setDisabled(true);
+    ui->listWidget->setDisabled(true);
     ui->pushButton_stop->setDisabled(false);
 }
 
@@ -636,6 +640,7 @@ void MainWindow::on_pushButton_stop_clicked()
 
     m_notify->stop();
     ui->pushButton_delete->setEnabled(true);
+    ui->listWidget->setEnabled(true);
     ui->pushButton_start->setEnabled(true);
     ui->pushButton_pause->setEnabled(false);
     ui->pushButton_skip->setEnabled(false);
@@ -825,6 +830,7 @@ void MainWindow::on_pushButton_skip_clicked()
 
     if(m_current_exercise && m_step != STEP_1_IDLE){
         m_total_time_remain -= m_current_time_out;
+        m_total_time_training -= m_current_time_out;
         switch (m_step){
         case STEP_1_IDLE:
             break;
