@@ -61,8 +61,10 @@ MainWindow::MainWindow(QWidget *parent)
         settings.setArrayIndex(i);
         QString dir = settings.value("value").toString();
         if(QDir(dir).exists()){
-            m_music_dir_list.push_back(dir);
-            ui->comboBox_dir_list->addItem(m_music_dir_list.at(i));
+            if(QDir(dir).exists()){
+                m_music_dir_list.push_back(dir);
+                ui->comboBox_dir_list->addItem(m_music_dir_list.at(i));
+            }
         }
     }
 
